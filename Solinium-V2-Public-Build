@@ -1,0 +1,974 @@
+--[[      _____     ____     _____        _____      __      _    _____   __    __     __    __    
+         / ____\   / __ \   (_   _)      (_   _)    /  \    / )  (_   _)  ) )  ( (     \ \  / /    
+        ( (___    / /  \ \    | |          | |     / /\ \  / /     | |   ( (    ) )    () \/ ()    
+         \___ \  ( ()  () )   | |          | |     ) ) ) ) ) )     | |    ) )  ( (     / _  _ \    
+             ) ) ( ()  () )   | |   __     | |    ( ( ( ( ( (      | |   ( (    ) )   / / \/ \ \   
+         ___/ /   \ \__/ /  __| |___) )   _| |__  / /  \ \/ /     _| |__  ) \__/ (   /_/      \_\  
+        /____/     \____/   \________/   /_____( (_/    \__/     /_____(  \______/  (/          \) V2                                                                                        
+
+
+
+
+    Solinium V2 is a neat little project I made a while back after I was unhappy with my previous projects.
+
+    Firstly, I would like to give thanks to all those that have helped me get this far and allowed me to make this script.
+
+    Secondly, this script is an exponential step upwards from my previous projects (BlueSky, Plutonium, Solinium V1).
+
+    Thirdly, I wasn't planning on releasing this script open source, but due to complications with the obfuscation process, I am now unable to do that.
+
+    Fourthly, I would highly recommend having both an above-room-temperature IQ to use this script, and I recommend having both gamepasses; that way you can use all the features of the script.
+
+    Lastly, I just want to say that this will probably be my last project, and there will be no V3 or any other major script releases from me, and again, thank you to everyone that helped me along the way.
+
+    
+
+    I will update this regularly (probably).
+    
+    If you find any bugs, report them at discord.gg/bFNjeYDs8h or DM me on discord <@986754973364785194>
+    
+    Please do not take anything from this script without my permission, and if you do, credit me. Thank You
+    
+    Solinium-V2 is a project owned & developed by notoriousknocks on discord
+]]
+
+
+
+
+local cmds = {aliases = {}}
+local loadtime = os.clock()
+local prefix = ">"
+local dcmds = {}
+local autorun = {"antikick","gearblacklist","obbykill"}
+local vars = {purgemethod = "rocket"}
+local hatbanned = {5738244883}
+local whitelisted = {}
+local cons = {}
+local loops = {}
+local vars = {}
+local gearwhitelisted = {}
+local blacklistedgear = {
+    "IvoryPeriastron",
+    "SubspaceTripmine",
+    "Transmorpher",
+    "LaserFingerPointers",
+    "SeaThemedCrossbow",
+    "RageTable",
+    "IceStaff",
+    "BlackHoleSword",
+    "ViridianThrowingKnives",
+    "ChartreusePeriastron",
+    "AzureDragonMagicSlayerSword",
+    "KorbloxTrap",
+    "Easterbomby",
+    "FlashBang",
+    "NightmareDragonSlayerSword",
+    "KOSSGustHorn",
+    "Red Convertible Car",
+    "Emerald Knights of the Seventh Sanctum Sword and Shield",
+    "BitePlant",
+    "BodySwapPotion",
+    "PaintBucket",
+    "AnAlpacaYouKnow"
+}
+local noexceptions = {"VampireVanquisher", "OrinthianSwordAndShield"}
+local NotificationHolder = loadstring([[local GUI = game:GetService("CoreGui"):FindFirstChild("STX_Nofitication")
+if not GUI then
+    local STX_Nofitication = Instance.new("ScreenGui")
+    local STX_NofiticationUIListLayout = Instance.new("UIListLayout")
+    STX_Nofitication.Name = "STX_Nofitication"
+    STX_Nofitication.Parent = game.CoreGui
+    STX_Nofitication.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+    STX_Nofitication.ResetOnSpawn = false
+    
+    STX_NofiticationUIListLayout.Name = "STX_NofiticationUIListLayout"
+    STX_NofiticationUIListLayout.Parent = STX_Nofitication
+    STX_NofiticationUIListLayout.HorizontalAlignment = Enum.HorizontalAlignment.Right
+    STX_NofiticationUIListLayout.SortOrder = Enum.SortOrder.LayoutOrder
+    STX_NofiticationUIListLayout.VerticalAlignment = Enum.VerticalAlignment.Bottom
+else
+end]])() -- credits to whoever made this cus i don't remember
+local Notification = loadstring([[local Nofitication = {}
+
+local GUI = game:GetService("CoreGui"):FindFirstChild("STX_Nofitication")
+function Nofitication:Notify(nofdebug, middledebug, all)
+    local SelectedType = string.lower(tostring(middledebug.Type))
+    local ambientShadow = Instance.new("ImageLabel")
+    local Window = Instance.new("Frame")
+    local Outline_A = Instance.new("Frame")
+    local WindowTitle = Instance.new("TextLabel")
+    local WindowDescription = Instance.new("TextLabel")
+    
+    ambientShadow.Name = "ambientShadow"
+    ambientShadow.Parent = GUI
+    ambientShadow.AnchorPoint = Vector2.new(0.5, 0.5)
+    ambientShadow.BackgroundTransparency = 1.000
+    ambientShadow.BorderSizePixel = 0
+    ambientShadow.Position = UDim2.new(0.91525954, 0, 0.936809778, 0)
+    ambientShadow.Size = UDim2.new(0, 0, 0, 0)
+    ambientShadow.Image = "rbxassetid://1316045217"
+    ambientShadow.ImageColor3 = Color3.fromRGB(0, 0, 0)
+    ambientShadow.ImageTransparency = 0.400
+    ambientShadow.ScaleType = Enum.ScaleType.Slice
+    ambientShadow.SliceCenter = Rect.new(10, 10, 118, 118)
+    
+    Window.Name = "Window"
+    Window.Parent = ambientShadow
+    Window.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
+    Window.BorderSizePixel = 0
+    Window.Position = UDim2.new(0, 5, 0, 5)
+    Window.Size = UDim2.new(0, 230, 0, 80)
+    Window.ZIndex = 2
+    
+    Outline_A.Name = "Outline_A"
+    Outline_A.Parent = Window
+    Outline_A.BackgroundColor3 = middledebug.OutlineColor
+    Outline_A.BorderSizePixel = 0
+    Outline_A.Position = UDim2.new(0, 0, 0, 25)
+    Outline_A.Size = UDim2.new(0, 230, 0, 2)
+    Outline_A.ZIndex = 5
+    
+    WindowTitle.Name = "WindowTitle"
+    WindowTitle.Parent = Window
+    WindowTitle.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+    WindowTitle.BackgroundTransparency = 1.000
+    WindowTitle.BorderColor3 = Color3.fromRGB(27, 42, 53)
+    WindowTitle.BorderSizePixel = 0
+    WindowTitle.Position = UDim2.new(0, 8, 0, 2)
+    WindowTitle.Size = UDim2.new(0, 222, 0, 22)
+    WindowTitle.ZIndex = 4
+    WindowTitle.Font = Enum.Font.GothamSemibold
+    WindowTitle.Text = nofdebug.Title
+    WindowTitle.TextColor3 = Color3.fromRGB(220, 220, 220)
+    WindowTitle.TextSize = 12.000
+    WindowTitle.TextXAlignment = Enum.TextXAlignment.Left
+    
+    WindowDescription.Name = "WindowDescription"
+    WindowDescription.Parent = Window
+    WindowDescription.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+    WindowDescription.BackgroundTransparency = 1.000
+    WindowDescription.BorderColor3 = Color3.fromRGB(27, 42, 53)
+    WindowDescription.BorderSizePixel = 0
+    WindowDescription.Position = UDim2.new(0, 8, 0, 34)
+    WindowDescription.Size = UDim2.new(0, 216, 0, 40)
+    WindowDescription.ZIndex = 4
+    WindowDescription.Font = Enum.Font.GothamSemibold
+    WindowDescription.Text = nofdebug.Description
+    WindowDescription.TextColor3 = Color3.fromRGB(180, 180, 180)
+    WindowDescription.TextSize = 12.000
+    WindowDescription.TextWrapped = true
+    WindowDescription.TextXAlignment = Enum.TextXAlignment.Left
+    WindowDescription.TextYAlignment = Enum.TextYAlignment.Top
+
+    if SelectedType == "default" then
+        local function ORBHB_fake_script()
+            local script = Instance.new('LocalScript', ambientShadow)
+        
+            ambientShadow:TweenSize(UDim2.new(0, 240, 0, 90), "Out", "Linear", 0.2)
+            Window.Size = UDim2.new(0, 230, 0, 80)
+            Outline_A:TweenSize(UDim2.new(0, 0, 0, 2), "Out", "Linear", middledebug.Time)
+    
+            wait(middledebug.Time)
+        
+            ambientShadow:TweenSize(UDim2.new(0, 0, 0, 0), "Out", "Linear", 0.2)
+            
+            wait(0.2)
+            ambientShadow:Destroy()
+        end
+        coroutine.wrap(ORBHB_fake_script)()
+    elseif SelectedType == "image" then
+        ambientShadow:TweenSize(UDim2.new(0, 240, 0, 90), "Out", "Linear", 0.2)
+        Window.Size = UDim2.new(0, 230, 0, 80)
+        WindowTitle.Position = UDim2.new(0, 24, 0, 2)
+        local ImageButton = Instance.new("ImageButton")
+        ImageButton.Parent = Window
+        ImageButton.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+        ImageButton.BackgroundTransparency = 1.000
+        ImageButton.BorderSizePixel = 0
+        ImageButton.Position = UDim2.new(0, 4, 0, 4)
+        ImageButton.Size = UDim2.new(0, 18, 0, 18)
+        ImageButton.ZIndex = 5
+        ImageButton.AutoButtonColor = false
+        ImageButton.Image = all.Image
+        ImageButton.ImageColor3 = all.ImageColor
+
+        local function ORBHB_fake_script()
+            local script = Instance.new('LocalScript', ambientShadow)
+        
+            Outline_A:TweenSize(UDim2.new(0, 0, 0, 2), "Out", "Linear", middledebug.Time)
+
+            wait(middledebug.Time)
+        
+            ambientShadow:TweenSize(UDim2.new(0, 0, 0, 0), "Out", "Linear", 0.2)
+            
+            wait(0.2)
+            ambientShadow:Destroy()
+        end
+        coroutine.wrap(ORBHB_fake_script)()
+    elseif SelectedType == "option" then
+        ambientShadow:TweenSize(UDim2.new(0, 240, 0, 110), "Out", "Linear", 0.2)
+        Window.Size = UDim2.new(0, 230, 0, 100)
+        local Uncheck = Instance.new("ImageButton")
+        local Check = Instance.new("ImageButton")
+        
+        Uncheck.Name = "Uncheck"
+        Uncheck.Parent = Window
+        Uncheck.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+        Uncheck.BackgroundTransparency = 1.000
+        Uncheck.BorderSizePixel = 0
+        Uncheck.Position = UDim2.new(0, 7, 0, 76)
+        Uncheck.Size = UDim2.new(0, 18, 0, 18)
+        Uncheck.ZIndex = 5
+        Uncheck.AutoButtonColor = false
+        Uncheck.Image = "http://www.roblox.com/asset/?id=6031094678"
+        Uncheck.ImageColor3 = Color3.fromRGB(255, 84, 84)
+        
+        Check.Name = "Check"
+        Check.Parent = Window
+        Check.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+        Check.BackgroundTransparency = 1.000
+        Check.BorderSizePixel = 0
+        Check.Position = UDim2.new(0, 28, 0, 76)
+        Check.Size = UDim2.new(0, 18, 0, 18)
+        Check.ZIndex = 5
+        Check.AutoButtonColor = false
+        Check.Image = "http://www.roblox.com/asset/?id=6031094667"
+        Check.ImageColor3 = Color3.fromRGB(83, 230, 50)
+
+        local function ORBHB_fake_script()
+            local script = Instance.new('LocalScript', ambientShadow)
+        
+            local Stilthere = true
+            local function Unchecked()
+                pcall(function()
+                    all.Callback(false)
+                end)
+                ambientShadow:TweenSize(UDim2.new(0, 0, 0, 0), "Out", "Linear", 0.2)
+                
+                wait(0.2)
+                ambientShadow:Destroy()
+                Stilthere = false
+            end
+            local function Checked()
+                pcall(function()
+                    all.Callback(true)
+                end)
+                ambientShadow:TweenSize(UDim2.new(0, 0, 0, 0), "Out", "Linear", 0.2)
+                
+                wait(0.2)
+                ambientShadow:Destroy()
+                Stilthere = false
+            end
+            Uncheck.MouseButton1Click:Connect(Unchecked)
+            Check.MouseButton1Click:Connect(Checked)
+            
+            Outline_A:TweenSize(UDim2.new(0, 0, 0, 2), "Out", "Linear", middledebug.Time)
+    
+            wait(middledebug.Time)
+
+            if Stilthere == true then
+        
+                ambientShadow:TweenSize(UDim2.new(0, 0, 0, 0), "Out", "Linear", 0.2)
+                
+                wait(0.2)
+                ambientShadow:Destroy()
+            end
+        end
+        coroutine.wrap(ORBHB_fake_script)()
+    end
+end
+
+return Nofitication]])() -- credits to whoever made this cus i don't remember
+local function notif(message, duration, ...)
+    local c = {...}
+    if c[1] then
+        Notification:Notify(
+            {Title = "Solinium-V2", Description = message},
+            {OutlineColor = Color3.fromRGB(86, 84, 240), Time = duration, Type = "option"},
+            {Callback = c[1]}
+        )
+    else
+        Notification:Notify(
+            {Title = "Solinium-V2", Description = message},
+            {OutlineColor = Color3.fromRGB(86, 84, 240), Time = duration, Type = "default"}
+        )
+    end
+end
+local function addcmd(n, t, f)
+    cmds[n] = {table = t, func = f}
+    if t.aliases and next(t.aliases) ~= nil then
+        for i,v in t.aliases do
+            cmds.aliases[v] = n
+        end
+    end
+end
+local function gp(str)
+	if str and type(str) == "string" and str ~= "" then
+		local players = game.Players:GetPlayers()
+		if str:lower() == "all" then
+			return players
+		elseif str:lower() == "others" then
+			table.remove(players, table.find(players, game.Players.LocalPlayer))
+			return players
+		elseif str:lower() == "me" then
+			return {game.Players.LocalPlayer}
+		elseif str:lower() == "friends" then
+			for i, v in players do
+				if not v:IsFriendsWith(game.Players.LocalPlayer.UserId) then
+					table.remove(players, i)
+				end
+			end
+			return players
+        elseif str:lower() == "nonfriends" then
+            table.remove(players, table.find(players, game.Players.LocalPlayer))
+            for i, v in players do
+				if v:IsFriendsWith(game.Players.LocalPlayer.UserId) then
+					table.remove(players, i)
+				end
+			end
+			return players
+        elseif str:lower() == "random" then
+            return {players[math.random(1, #players)]}
+		else
+			players = {}
+			for i, v in game.Players:GetPlayers() do
+				if
+					v.Name:lower():sub(1, str:len()) == str:lower() or
+					v.DisplayName:lower():sub(1, str:len()) == str:lower()
+				then
+					table.insert(players, v)
+				end
+			end
+			return players
+		end
+	else
+		return {}
+	end
+end
+local function getrgb(Color)
+    local Color = BrickColor.new(Color)
+    local r = Color.r
+    local g = Color.g
+    local b = Color.b
+    return Color3.new(r, g, b)
+end
+local function color(part, color)
+    local thread =
+        coroutine.create(
+        function()
+            local Arguments = {
+                ["Part"] = part,
+                ["Color"] = getrgb(color)
+            }
+            game:GetService("Workspace")[game:GetService("Players").LocalPlayer.Name].PaintBucket:WaitForChild(
+                "Remotes"
+            ).ServerControls:InvokeServer("PaintPart", Arguments)
+        end
+    )
+    coroutine.resume(thread)
+end
+local function checkargs(table1, table2, str) -- this is kinda poop
+    local arguments = {}
+    for i,v in pairs(table1) do
+        if v:sub(1,1) == "*" and v:sub(-1) == "*" then
+            table.insert(arguments, {"REQUIRED", i})
+        else
+            table.insert(arguments, {"OPTIONAL", i})
+        end
+    end
+    for i,v in pairs(arguments) do
+        if not table2[i] and v[1] ~= "OPTIONAL" then
+            notif("Bad Arguments #"..tostring(i).." To '"..str.."'", 3)
+            return false
+        end
+    end
+    return true
+end
+local function runcmd(str, tbl, fullstring) -- same w/ this
+    if cmds[str] and str:lower() ~= "aliases" then
+        coroutine.wrap(function()
+            if not dcmds[str] then
+                dcmds[str] = true
+                coroutine.wrap(function()
+                    if checkargs(cmds[str].table.args, {table.unpack(tbl, 2)}, str) == true then
+                        cmds[str].func({table.unpack(tbl, 2)}, fullstring)
+                    end
+                end)()
+                task.wait(0.6)
+                dcmds[str] = false
+                dcmds[str] = nil
+            end
+        end)()
+    elseif cmds.aliases[str] and str:lower() ~= "aliases" then
+        str = cmds.aliases[str]
+        coroutine.wrap(function()
+            if not dcmds[str] then
+                dcmds[str] = true
+                coroutine.wrap(function()
+                    if checkargs(cmds[str].table.args, {table.unpack(tbl, 2)}, str) == true then
+                        cmds[str].func({table.unpack(tbl, 2)}, fullstring)
+                    end
+                end)()
+                task.wait(0.6)
+                dcmds[str] = false
+                dcmds[str] = nil
+            end
+        end)()
+    else
+        notif("Command '"..str.."' Not Found", 3)
+    end
+end
+local function isinradius(cframe1, cframe2, radius)
+    return (cframe1.Position - cframe2.Position).Magnitude <= radius
+end
+
+local function fixmover()
+    vars.ivorymoving = false
+    for i,v in workspace:GetChildren() do
+        if v.Name == "Pulse" then
+            v:Destroy()
+        end
+    end
+    for i,v in game.Workspace:GetDescendants() do
+        if v:IsA("BasePart") then
+            v.CanCollide = true
+        end
+    end
+    workspace.Gravity = 196.2
+    game.Players:Chat("respawn me fuck")
+    game.Players.LocalPlayer.CharacterAdded:Wait()
+end
+local function IPDOPC(part)
+    for _, player in pairs(game.Players:GetPlayers()) do
+        if player.Character then
+            if part:IsDescendantOf(player.Character) then
+                return true
+            end
+        end
+    end
+    return false
+end
+local function move(part, coords)
+    local s,e = pcall(function()
+        if vars.ivorymoving then
+            repeat task.wait() until not vars.ivorymoving
+        end
+        vars.ivorymoving = true
+        game.Players:Chat("gear me 108158379")
+        repeat task.wait() until game.Players.LocalPlayer.Backpack:FindFirstChild("IvoryPeriastron") or not vars.ivorymoving
+        repeat task.wait() until game.Players.LocalPlayer.Backpack:FindFirstChild("IvoryPeriastron"):FindFirstChild("Remote") or not vars.ivorymoving
+        game.Players.LocalPlayer.Backpack:FindFirstChild("IvoryPeriastron").Parent = game.Players.LocalPlayer.Character
+        game.Players:Chat("size me .4")
+        repeat task.wait() until game.Players.LocalPlayer.Character.HumanoidRootPart.Size == Vector3.new(0.800000011920929, 0.800000011920929, 0.4000000059604645) or not vars.ivorymoving
+        for i,v in game.Workspace:GetDescendants() do
+            if v:IsA("BasePart") then
+                v.CanCollide = false
+            end
+        end
+        workspace.Gravity = 0
+        game.Players.LocalPlayer.Character.Humanoid.PlatformStand = true
+        workspace.FallenPartsDestroyHeight = 0/0
+        coroutine.wrap(function()
+            repeat
+                game:GetService("RunService").Heartbeat:wait()
+                game.Players.LocalPlayer.Character.HumanoidRootPart.Velocity = Vector3.new(0, 0, 0)
+                game.Players.LocalPlayer.Character.HumanoidRootPart.RotVelocity = Vector3.new(0, 0, 0)
+            until not vars.ivorymoving
+        end)()
+        game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = coords * CFrame.new(-1 * (part.Size.X / 2) - (game.Players.LocalPlayer.Character["Torso"].Size.X / 2), 0, 0)
+        task.wait(0.3)
+        game.Players.LocalPlayer.Character.IvoryPeriastron.Remote:FireServer(Enum.KeyCode.E)
+        repeat task.wait() until workspace.Camera:FindFirstChild("FakeCharacter") or not vars.ivorymoving
+        game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = part.CFrame * CFrame.new(-1 * (part.Size.X / 2) - (game.Players.LocalPlayer.Character["Torso"].Size.X / 2), 0, 0)
+        task.wait(0.3)
+        repeat game.Players:Chat("unpunish me me me fuck") task.wait() until game.Players.LocalPlayer.Character.Torso:FindFirstChild("Weld") or not vars.ivorymoving
+        for i,v in workspace:GetChildren() do
+            if v.Name == "Pulse" then
+                v:Destroy()
+            end
+        end
+        game.Players.LocalPlayer.Character.IvoryPeriastron.Remote:FireServer(Enum.KeyCode.E)
+        repeat task.wait() until workspace:FindFirstChild("Pulse") or not vars.ivorymoving
+        for i,v in workspace:GetChildren() do
+            if v.Name == "Pulse" then
+                v:Destroy()
+            end
+        end
+        for i,v in game.Workspace:GetDescendants() do
+            if v:IsA("BasePart") then
+                v.CanCollide = true
+            end
+        end
+        workspace.Gravity = 196.2
+        game.Players:Chat("respawn me fuck")
+        game.Players.LocalPlayer.CharacterAdded:Wait()
+        vars.ivorymoving = false
+    end)
+    if not s then
+        warn("ERROR MOVING PARTS\n\n"..e)
+        notif("Error Moving Parts", 2)
+        fixmover()
+    end
+end
+
+addcmd("cmds", {args = {}, aliases = {"commands"}, desc = "Prints Commands To Console"}, function()
+    local str = "\nIf there are asterisks (*) surrounding an argument, the argument is required for the command to work.\n\n"
+    for i,v in pairs(cmds) do
+        if i ~= "aliases" then
+            str = str..i.." | Arguments = {"..table.concat(v.table.args, ", ").."} | Description = \""..v.table.desc.."\" | Aliases = {"..table.concat(v.table.aliases, ", ").."}\n"
+        end
+    end
+    print(str)
+    notif("Check Developer Console To View A List Of Commands", 5)
+end)
+
+addcmd("run", {args = {"*code*"}, aliases = {"lua", "execute", "s"}, desc = "Runs Lua Code"}, function(args, text)
+    local code = string.sub(text, text:split(" ")[1]:len()+2)
+    local s,e = pcall(loadstring(code))
+    if not s then
+        notif("Error Running Code: "..e, 5)
+    else
+        notif("Successfully Ran", 2)
+    end
+end)
+
+addcmd("savemap", {args = {"*name*"}, aliases = {}, desc = "Saves Map Parts To Be Loaded Via loadmap"}, function(args, text)
+    local mapname = string.sub(text, text:split(" ")[1]:len()+2)
+    if not isfile(mapname..".json") then
+        local table = {}
+        for i,v in workspace:GetDescendants() do
+            if v:IsA("BasePart") and IPDOPC(v) == false and v:IsDescendantOf(workspace.Terrain._Game.Folder) == false and v.Name ~= "Head" then
+                table[v.Name] = tostring(v.CFrame)
+            end
+        end
+        local encoded = game:GetService("HttpService"):JSONEncode(table)
+        writefile(mapname..".json", encoded)
+    else
+        notif("File Already Exists With That Name", 3)
+    end
+end)
+
+addcmd("loadmap", {args = {"*name*"}, aliases = {}, desc = "Loads Previously Saved Map Parts"}, function(args, text)
+    local mapname = string.sub(text, text:split(" ")[1]:len()+2)
+    if isfile(mapname..".json") then
+        local decoded = game:GetService("HttpService"):JSONDecode(readfile(mapname..".json"))
+        for i,v in workspace:GetDescendants() do
+            if v:IsA("BasePart") and IPDOPC(v) == false and v:IsDescendantOf(workspace.Terrain._Game.Folder) == false then
+                if decoded[v.Name] then
+                    if not isinradius(v.CFrame, CFrame.new(unpack(game:GetService("HttpService"):JSONDecode("["..decoded[v.Name].."]"))), 0.1) then
+                        move(v, CFrame.new(unpack(game:GetService("HttpService"):JSONDecode("["..decoded[v.Name].."]"))))
+                    end
+                end
+            end
+        end
+    else
+        notif("File Does Not Exist", 3)
+    end
+end)
+
+addcmd("savepaint", {args = {"*name*"}, aliases = {}, desc = "Saves The Map Paint To A File Which Can Be Loaded Via loadpaint"}, function(args, text)
+    local paintname = string.sub(text, text:split(" ")[1]:len()+2)
+    if not isfile(paintname..".json") then
+        local table = {}
+        for i,v in workspace:GetDescendants() do
+            if v:IsA("BasePart") and IPDOPC(v) == false and v:IsDescendantOf(workspace.Terrain._Game.Folder) == false then
+                table[v.Name] = tostring(v.BrickColor)
+            end
+        end
+        local encoded = game:GetService("HttpService"):JSONEncode(table)
+        writefile(paintname..".json", encoded)
+    else
+        notif("File Already Exists With That Name", 3)
+    end
+end)
+
+addcmd("loadpaint", {args = {"*name*"}, aliases = {}, desc = "Loads Previously Saved Map Paint"}, function(args, text)
+    local paintname = string.sub(text, text:split(" ")[1]:len()+2)
+    if isfile(paintname..".json") then
+        local decoded = game:GetService("HttpService"):JSONDecode(readfile(paintname..".json"))
+        game.Players:Chat("gear me 18474459")
+        repeat task.wait() until game.Players.LocalPlayer.Backpack:FindFirstChild("PaintBucket")
+        game.Players.LocalPlayer.Backpack:FindFirstChild("PaintBucket").Parent = game.Players.LocalPlayer.Character
+        repeat task.wait() until game.Players.LocalPlayer.Character:FindFirstChild("PaintBucket")
+        for i,v in workspace:GetDescendants() do
+            if v:IsA("BasePart") and IPDOPC(v) == false and v:IsDescendantOf(workspace.Terrain._Game.Folder) == false then
+                if decoded[v.Name] and v.BrickColor ~= BrickColor.new(decoded[v.Name]) then
+                    color(v, decoded[v.Name])
+                end
+            end
+        end
+    else
+        notif("File Does Not Exist", 3)
+    end
+end)
+
+addcmd("fixmover", {args = {}, aliases = {}, desc = "Fixes The Ivory Mover If It Has Failed And Not Fixed Itself"}, function()
+    fixmover()
+end)
+
+addcmd("fixregen", {args = {}, aliases = {"fixreg"}, desc = "Fixes The Position Of The Regen Pad (If The Regen Pad Is Loaded)"}, function()
+    if workspace.Terrain._Game.Admin:FindFirstChild("Regen") then
+        move(workspace.Terrain._Game.Admin:FindFirstChild("Regen"), CFrame.new(-7.16500044, 5.42999268, 94.7430038, 0, 0, -1, 0, 1, 0, 1, 0, 0))
+    else
+        notif("Regen Not Loaded", 2)
+    end
+end)
+
+addcmd("hideregen", {args = {}, aliases = {"hidereg"}, desc = "Hides The Regen Pad"}, function()
+    if workspace.Terrain._Game.Admin:FindFirstChild("Regen") then
+        move(workspace.Terrain._Game.Admin:FindFirstChild("Regen"), CFrame.new(157290.969,-29124.8887,-37825.0312,0.999996841,-0.00250337017,-8.53495367e-05,0.00250330311,0.999996543,-0.000777005684,8.7294371e-05,0.000776789617,0.999999702))
+    else
+        notif("Regen Not Loaded", 2)
+    end
+end)
+
+addcmd("hidebaseplate", {args = {}, aliases = {"hidebp"}, desc = "Hides The Baseplate"}, function()
+    if workspace.Terrain._Game.Workspace:FindFirstChild("Baseplate") then
+        move(workspace.Terrain._Game.Workspace:FindFirstChild("Baseplate"), CFrame.new(157290.969,-29124.8887,-37825.0312,0.999996841,-0.00250337017,-8.53495367e-05,0.00250330311,0.999996543,-0.000777005684,8.7294371e-05,0.000776789617,0.999999702))
+    else
+        notif("Baseplate Not Loaded", 2)
+    end
+end)
+
+addcmd("fixbaseplate", {args = {}, aliases = {"fixbp"}, desc = "Fixes The Position Of The Baseplate (If It Is Loaded)"}, function()
+    if workspace.Terrain._Game.Workspace:FindFirstChild("Baseplate") then
+        move(workspace.Terrain._Game.Workspace:FindFirstChild("Baseplate"), CFrame.new(0, 0.100000001, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1))
+    else
+        notif("Baseplate Not Loaded", 2)
+    end
+end)
+
+addcmd("blockspawn", {args = {}, aliases = {}, desc = "Blocks The Obby Preventing Completion"}, function()
+    if workspace.Terrain._Game.Workspace["Obby Box"]:FindFirstChild("Left Wall") and workspace.Terrain._Game.Workspace["Obby Box"]:FindFirstChild("Right Wall") then
+        move(workspace.Terrain._Game.Workspace["Obby Box"]["Right Wall"], CFrame.new(-50.0650101,16.5000038,0.243000031,-0.25881952,2.26267218e-08,0.965925694,-5.84279434e-08,1,-3.90806605e-08,-0.965925694,-6.65518982e-08,-0.25881952))
+        move(workspace.Terrain._Game.Workspace["Obby Box"]["Left Wall"], CFrame.new(-32.0650024,16.5000019,0.243000031,0.258819073,0,0.965925813,0,1,0,-0.965925813,0,0.258819073))
+    else
+        notif("Required Parts Not Loaded", 2)
+    end
+end)
+
+addcmd("shutdown", {args = {"reason"}, aliases = {}, desc = "Crashes The Server With A Message (REQUIRES PERSONS299)"}, function(args, text)
+    game.Players:Chat("fogend")
+    game.Players:Chat("fogcolor 0 0 0")
+    game.Players:Chat("time -")
+    if args[1] then
+        local reason = string.sub(text, text:split(" ")[1]:len()+2)
+        game.Players:Chat("h/\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nThis Server Has Been Closed By Solinium-V2\nReason: \""..reason.."\"")
+    else
+        game.Players:Chat("h/\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nThis Server Has Been Closed By Solinium-V2")
+    end
+    task.wait(0.3)
+    cmds["silcrash"].func()
+end)
+
+addcmd("obbykill", {args = {"on/off"}, aliases = {}, desc = "Toggles The Obby's Ability To Kill You (LOCAL)"}, function(args, text)
+    local obbyjumps = workspace.Terrain._Game.Workspace.Obby:GetChildren()
+    if not args[1] then
+        for i, v in pairs(obbyjumps) do
+            if v.CanTouch then
+                v.CanTouch = false
+            else
+                v.CanTouch = true
+            end
+        end
+    elseif args[1]:lower() == "off" then
+        for i, v in pairs(obbyjumps) do
+            if v.CanTouch then
+                v.CanTouch = false
+            end
+        end
+    elseif args[1]:lower() == "on" then
+        for i, v in pairs(obbyjumps) do
+            if not v.CanTouch then
+                v.CanTouch = true
+            end
+        end
+    end
+end)
+
+
+addcmd("hatkick", {args = {"*player*", "pm rounds"}, aliases = {"kick", "hcrash"}, desc = "Crashes A Player. The Second Arg Will PMKick The Player For A Set Number Of Rounds (each round consisting of 100 pms) Every 5 Seconds"}, function(args)
+    for i,v in gp(args[1]) do
+        game.Players:Chat("respawn "..v.Name.."                                              FUCK")
+        v.CharacterAdded:Wait()
+        game.Players:Chat("blind "..v.Name.."                                                FUCK")
+        for i=1,5 do
+            game.Players:Chat("skydive "..v.Name.." "..v.Name.." "..v.Name.."                FUCK")
+        end
+        game.Players:Chat("size "..v.Name.." 9.9")
+        game.Players:Chat("size "..v.Name.." 10")
+        game.Players:Chat("unseizure "..v.Name.." "..v.Name.."                               FUCK")
+        task.wait(0.1)
+        game.Players:Chat("freeze "..v.Name.."                                               FUCK")
+        game.Players:Chat("invisible "..v.Name.."                                            FUCK")
+        for i = 1, 100 do
+            game.Players:Chat("hat " .. v.Name .. " 0000000000000000000000000000000000000000000018219890448")
+        end
+        task.delay(3, function()
+            if args[2] then
+                if type(tonumber(args[2])) == "number" then
+                    notif("PMKicking "..v.Name.." For "..args[2].." Round(s)", 3)
+                    for i=1,tonumber(args[2]) do
+                        if not table.find(game.Players:GetPlayers(), v) then
+                            break
+                        end
+                        for i=1,100 do
+                            game.Players:Chat("pm "..v.Name.." 🤦‍♀️🤦‍♀️🤦‍♀️🤦‍♀️🤦‍♀️🤦‍♀️🤦‍♀️🤦‍♀️🤦‍♀️🤦‍♀️🤦‍♀️🤦‍♀️🤦‍♀️🤦‍♀️🤦‍♀️🤦‍♀️🤦‍♀️🤦‍♀️🤦‍♀️🤦‍♀️🤦‍♀️🤦‍♀️🤦‍♀️🤦‍♀️🤦‍♀️🤦‍♀️🤦‍♀️🤦‍♀️🤦‍♀️🤦‍♀️🤦‍♀️🤦‍♀️🤦‍♀️🤦‍♀️🤦‍♀️🤦‍♀️🤦‍♀️🤦‍♀️🤦‍♀️🤦‍♀️🤦‍♀️🤦‍♀️🤦‍♀️🤦‍♀️🤦‍♀️🤦‍♀️🤦‍♀️🤦‍♀️🤦‍♀️🤦‍♀️🤦‍♀️🤦‍♀️🤦‍♀️🤦‍♀️🤦‍♀️🤦‍♀️🤦‍♀️🤦‍♀️🤦‍♀️🤦‍♀️🤦‍♀️🤦‍♀️🤦‍♀️🤦‍♀️🤦‍♀️🤦‍♀️🤦‍♀️🤦‍♀️🤦‍♀️🤦‍♀️")
+                        end
+                        task.wait(5)
+                    end
+                end
+            end
+        end)
+        task.wait(5.5)
+    end
+end)
+
+addcmd("pmlag", {args = {"*player*", "*pm rounds*"}, aliases = {"pl"}, desc = ""}, function(args)
+    for i,v in gp(args[1]) do
+        game.Players:Chat("blind "..v.Name.." fuck")
+        game.Players:Chat("freeze "..v.Name.." fuck")
+        game.Players:Chat("rainbowify "..v.Name.." fuck")
+        game.Players:Chat("name "..v.Name.." [Solinium-V2]\nLagging Player...")
+        task.wait()
+        if type(tonumber(args[2])) == "number" then
+            notif("PMKicking "..v.Name.." For "..args[2].." Round(s)", 3)
+            for i=1,tonumber(args[2]) do
+                if not table.find(game.Players:GetPlayers(), v) then
+                    break
+                end
+                for i=1,100 do
+                    game.Players:Chat("pm "..v.Name.." 🤦‍♀️🤦‍♀️🤦‍♀️🤦‍♀️🤦‍♀️🤦‍♀️🤦‍♀️🤦‍♀️🤦‍♀️🤦‍♀️🤦‍♀️🤦‍♀️🤦‍♀️🤦‍♀️🤦‍♀️🤦‍♀️🤦‍♀️🤦‍♀️🤦‍♀️🤦‍♀️🤦‍♀️🤦‍♀️🤦‍♀️🤦‍♀️🤦‍♀️🤦‍♀️🤦‍♀️🤦‍♀️🤦‍♀️🤦‍♀️🤦‍♀️🤦‍♀️🤦‍♀️🤦‍♀️🤦‍♀️🤦‍♀️🤦‍♀️🤦‍♀️🤦‍♀️🤦‍♀️🤦‍♀️🤦‍♀️🤦‍♀️🤦‍♀️🤦‍♀️🤦‍♀️🤦‍♀️🤦‍♀️🤦‍♀️🤦‍♀️🤦‍♀️🤦‍♀️🤦‍♀️🤦‍♀️🤦‍♀️🤦‍♀️🤦‍♀️🤦‍♀️🤦‍♀️🤦‍♀️🤦‍♀️🤦‍♀️🤦‍♀️🤦‍♀️🤦‍♀️🤦‍♀️🤦‍♀️🤦‍♀️🤦‍♀️🤦‍♀️")
+                end
+                task.wait(5)
+            end
+        end
+    end
+end)
+
+
+addcmd("rocketkick", {args = {"*player*"}, aliases = {"rkick", "rk"}, desc = "Attempts To Crash A Player Using rocket/ (REQUIRES PERSONS299 GAMEPASS)"}, function(args) -- kinda shitty
+    for i,v in gp(args[1]) do
+        vars.rocketkicking = true
+        game.Players:Chat("setgrav "..v.Name.." 5000")
+        game.Players:Chat("speed "..v.Name.." 0")
+        if v.Character.Humanoid.WalkSpeed > 0 then
+            v.Character.Humanoid:GetPropertyChangedSignal("WalkSpeed"):Wait()
+        end
+        for i=1,100 do
+            game.Players:Chat("rocket/all all all fuck")
+        end
+        task.wait(0.3)
+        for i,plr in game.Players:GetPlayers() do
+            if plr ~= v then
+                game.Players:Chat("unrocket/"..plr.Name.." fuck")
+            end
+        end
+        repeat
+            game.Players.LocalPlayer.Character.HumanoidRootPart.Velocity = Vector3.new(0, 0, 0)
+            game.Players.LocalPlayer.Character.HumanoidRootPart.RotVelocity = Vector3.new(0, 0, 0)
+            game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = v.Character.HumanoidRootPart.CFrame * CFrame.new(0, 0, 2) * CFrame.Angles(0, math.rad(180), 0)
+            game.Players:Chat("rocket/ " .. v.Name .. " me " .. v.Name .." fuck")
+            game:GetService("RunService").RenderStepped:Wait()
+        until not vars.rocketkicking or not table.find(game.Players:GetPlayers(), v)
+    end
+end)
+
+addcmd("stoprkick", {args = {}, aliases = {}, desc = "Stops Rocket Kick"}, function(args)
+    if vars.rocketkicking then
+        vars.rocketkicking = false
+    end
+end)
+
+addcmd("gearblacklist", {args = {}, aliases = {}, desc = "Blacklists A Preset Of Gears Defined In The blacklisted_gear & noexceptions Tables"}, function()
+    if not cons.gearblacklist then
+        cons.gearblacklist = game.Players.DescendantAdded:Connect(function(tool)
+            if tool:IsA("Tool") and tool.Parent.Parent:IsA("Player") and table.find(blacklistedgear, tool.Name) or table.find(noexceptions, tool.Name) then
+                local plr = tool.Parent.Parent
+                if not table.find(gearwhitelisted, plr.Name) or table.find(noexceptions, tool.Name) then
+                    if plr.UserId ~= game.Players.LocalPlayer.UserId then
+                        game.Players:Chat("ungear "..plr.Name.." others fuck")
+                        game.Players:Chat("pm "..plr.Name.." [Solinium-V2]\n\""..tool.Name.."\" Is Blacklisted In This Server")
+                    end
+                end
+            end
+        end)
+    end
+end)
+
+addcmd("gearwhitelist", {args = {"*player*"}, aliases = {"gwl","gearwl"}, desc = "Whitelists A Player From The Gear Blacklist"}, function(args)
+    for i,v in gp(args[1]) do
+        if not table.find(gearwhitelisted, v.Name) then
+            table.insert(gearwhitelisted, v.Name)
+        end
+    end
+end)
+
+addcmd("ungearwhitelist", {args = {"*player*"}, aliases = {"ungwl","ungearwl"}, desc = "Unwhitelists A Player From The Gear Blacklist"}, function(args)
+    for i,v in gp(args[1]) do
+        if table.find(gearwhitelisted, v.Name) then
+            table.remove(gearwhitelisted, table.find(gearwhitelisted, v.Name))
+        end
+    end
+end)
+
+addcmd("ungearblacklist", {args = {}, aliases = {}, desc = "Disables The Gear Blacklist"}, function()
+    if cons.gearblacklist then
+        cons.gearblacklist:Disconnect()
+        cons.gearblacklist = nil
+    end
+end)
+
+addcmd("silcrash", {args = {}, aliases = {}, desc = "Silently Crashes The Server With Commands (1 Frame)"}, function()
+    game.Players:Chat("respawn others fuck")
+    for i=1,3 do
+        game.Players:Chat("size all .3")
+    end
+    for i = 1, 13 do
+        game.Players:Chat("rocket/all all all fuck")
+        game.Players:Chat("freeze all all all fuck")
+        game.Players:Chat("dog all all all fuck")
+    end
+    for i=1,3 do
+        game.Players:Chat("size all 10")
+    end
+    for i=1,200 do
+        game.Players:Chat("clone all all all fuck")
+    end
+    notif("Server Should Be Crashed Now!", 7)
+    for i=1,5000 do
+        game.Players:Chat("clone all all all fuck")
+        task.wait()
+    end
+end)
+
+addcmd("antikick", {args = {}, aliases = {}, desc = "Prevents Rocket, Dog & Hat Kicks"}, function()
+    if not cons.antikick then
+		cons.antikick = workspace.DescendantAdded:Connect(function(part)
+			if part.Name == "Rocket" or part.Name == "Addon" and part:IsA("BasePart") then
+				part.CanCollide = false
+				part.CanTouch = false
+			elseif part:IsA("Accessory") and tostring(part.AccessoryType) == "Enum.AccessoryType.Back" and part.Name == "Accessory (Chicken Triangle)" then
+				game:GetService("RunService").RenderStepped:Wait()
+                part:Destroy()
+			end
+		end)
+		for i,part in pairs(workspace:GetDescendants()) do
+			if part.Name == "Rocket" or part.Name == "Addon" and part:IsA("BasePart") then
+				part.CanCollide = false
+				part.CanTouch = false
+			elseif part:IsA("Accessory") and tostring(part.AccessoryType) == "Enum.AccessoryType.Back" and part.Name == "Accessory (Chicken Triangle)" then
+				part:Destroy()
+			end
+		end
+	end
+end)
+
+addcmd("unantikick", {args = {}, aliases = {}, desc = "Disables AntiKick"}, function()
+    if cons.antikick then
+        cons.antikick:Disconnect()
+        cons.antikick = nil
+	end
+end)
+
+addcmd("whitelist", {args = {"*player*"}, aliases = {"wl"}, desc = "Whitelists A Player To Use Your Commands (Be Careful Giving People This!)"}, function(args, tex)
+    for i,v in gp(args[1]) do
+        if not whitelisted[v.Name] then
+            whitelisted[v.Name] = {}
+            local con1 = v.Chatted:Connect(function(msg)
+                if msg:sub(1, #prefix) == prefix then
+                    msg = msg:sub(#prefix+1)
+                    local splitted = msg:split(" ")
+                    coroutine.wrap(function()
+                        runcmd(splitted[1], splitted, msg)
+                    end)()
+                end
+            end)
+            table.insert(whitelisted[v.Name], con1)
+        end
+    end
+end)
+addcmd("unwhitelist", {args = {"*player*"}, aliases = {"unwl"}, desc = "Unwhitelists A Player To Use Your Commands"}, function(args, tex)
+    for i,v in gp(args[1]) do
+        if whitelisted[v.Name] then
+            for i,v in pairs(whitelisted[v.Name]) do
+                if v.Connected then
+                    v:Disconnect()
+                end
+                v = nil
+            end
+        end
+    end
+end)
+
+addcmd("hatban", {args = {"*player*"}, aliases = {"hban"}, desc = "Crashes A Player (Doesn't Crash iOS or MacOS Players)"}, function(args, tex)
+    for i,v in gp(args[1]) do
+        if not table.find(hatbanned, v.UserId) then
+            table.insert(hatbanned, v.UserId)
+            cmds["hatkick"].func({v.Name})
+        end
+    end
+end)
+
+addcmd("unhatban", {args = {"*player*"}, aliases = {"unhban"}, desc = "Removes A Hatban From A Player"}, function(args, tex)
+    for i,v in gp(args[1]) do
+        if table.find(hatbanned, v.UserId) then
+            table.remove(hatbanned, table.find(hatbanned,v.UserId))
+        end
+    end
+end)
+
+cons[#cons+1] = game.Players.LocalPlayer.Chatted:Connect(function(msg)
+    if msg:sub(1, #prefix) == prefix then
+        msg = msg:sub(#prefix+1)
+        local splitted = msg:split(" ")
+        coroutine.wrap(function()
+            runcmd(splitted[1], splitted, msg)
+        end)()
+    end
+end)
+
+cons[#cons+1] = game.Players.PlayerAdded:Connect(function(plr)
+    if table.find(hatbanned, plr.UserId) then
+        plr.CharacterAdded:Wait()
+        cmds["hatkick"].func({plr.Name})
+    end
+    if whitelisted[plr.Name] then
+        for i,v in pairs(whitelisted[plr.Name]) do
+            v = nil
+        end
+        local con1 = plr.Chatted:Connect(function(msg)
+            if msg:sub(1, #prefix) == prefix then
+                msg = msg:sub(#prefix+1)
+                local splitted = msg:split(" ")
+                coroutine.wrap(function()
+                    runcmd(splitted[1], splitted, msg)
+                end)()
+            end
+        end)
+        table.insert(whitelisted[plr.Name], con1)
+    end
+end)
+
+cons[#cons+1] = game.Players.PlayerRemoving:Connect(function(plr)
+    if whitelisted[plr.Name] then
+        for i,v in pairs(whitelisted[plr.Name]) do
+            if v.Connected then
+                v:Disconnect()
+            end
+            v = nil
+        end
+    end
+end)
+
+task.delay(0.4, function()
+    for i,v in autorun do -- chatless autorun (fuck u tech)
+        coroutine.wrap(function()
+            runcmd(v:split(" ")[1], v:split(" "), v)
+        end)()
+    end
+    notif("Start-Up Commands Loaded", 5)
+end)
+
+notif("Solinium-V2 Has Been Loaded In: "..tostring(math.floor((os.clock() - loadtime) * 1000)).." ms, Welcome "..game.Players.LocalPlayer.Name, 5)
+notif("Script Owned & Developed By Knocks", 3)
