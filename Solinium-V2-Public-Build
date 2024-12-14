@@ -529,7 +529,7 @@ addcmd("antipunish", {args = {}, aliases = {}, desc = "Anti Punish"}, function(a
             antis["antipunish"][v.Name] = {}
             local tbl = antis["antipunish"][v.Name]
             local con1 = v.CharacterAdded:Connect(function(chr)
-                local con2 = v.AncestryChanged:Connect(function(child, parent)
+                local con2 = v.Character.AncestryChanged:Connect(function(child, parent)
                     if parent == game.Lighting then
                         game.Players:Chat("unpunish me                                                              fuck")
                     end
@@ -537,12 +537,14 @@ addcmd("antipunish", {args = {}, aliases = {}, desc = "Anti Punish"}, function(a
                 table.insert(tbl, con2)
             end)
             table.insert(tbl, con1)
-            local con2 = v.AncestryChanged:Connect(function(child, parent)
-                if parent == game.Lighting then
-                    game.Players:Chat("unpunish me                                                              fuck")
-                end
-            end)
-            table.insert(tbl, con2)
+            if v.Character then
+                local con2 = v.Character.AncestryChanged:Connect(function(child, parent)
+                    if parent == game.Lighting then
+                        game.Players:Chat("unpunish me                                                              fuck")
+                    end
+                end)
+                table.insert(tbl, con2)
+            end
         end
     end
 end)
