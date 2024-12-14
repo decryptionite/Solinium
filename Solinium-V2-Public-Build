@@ -22,8 +22,6 @@
     Lastly, I just want to say that this will probably be my last project, and there will be no V3 or any other major script releases from me, and again, thank you to everyone that helped me along the way.
 
     
-
-    I will update this regularly (probably).
     
     If you find any bugs, report them at discord.gg/bFNjeYDs8h or DM me on discord <@986754973364785194>
     
@@ -45,6 +43,9 @@ local hatbanned = {5738244883}
 local whitelisted = {}
 local cons = {}
 local loops = {}
+local antis = {
+    ["antipunish"] = {}
+}
 local vars = {}
 local gearwhitelisted = {}
 local blacklistedgear = {
@@ -520,6 +521,44 @@ addcmd("cmds", {args = {}, aliases = {"commands"}, desc = "Prints Commands To Co
     end
     print(str)
     notif("Check Developer Console To View A List Of Commands", 5)
+end)
+
+addcmd("antipunish", {args = {}, aliases = {}, desc = "Anti Punish"}, function(args)
+    for i,v in gp(args[1]) do
+        if not antis["antipunish"][v.Name] then
+            antis["antipunish"][v.Name] = {}
+            local tbl = antis["antipunish"][v.Name]
+            local con1 = v.CharacterAdded:Connect(function(chr)
+                local con2 = v.AncestryChanged:Connect(function(child, parent)
+                    if parent == game.Lighting then
+                        game.Players:Chat("unpunish me                                                              fuck")
+                    end
+                end)
+                table.insert(tbl, con2)
+            end)
+            table.insert(tbl, con1)
+            local con2 = v.AncestryChanged:Connect(function(child, parent)
+                if parent == game.Lighting then
+                    game.Players:Chat("unpunish me                                                              fuck")
+                end
+            end)
+            table.insert(tbl, con2)
+        end
+    end
+end)
+
+addcmd("unantipunish", {args = {}, aliases = {}, desc = "Turns Off Anti Punish"}, function(args)
+    for i,v in gp(args[1]) do
+        if antis["antipunish"][v.Name] then
+            for i,v in antis["antipunish"][v.Name] do
+                if v.Connected then
+                    v:Disconnect()
+                end
+                v = nil
+            end
+            antis["antipunish"][v.Name] = nil
+        end
+    end
 end)
 
 addcmd("run", {args = {"*code*"}, aliases = {"lua", "execute", "s"}, desc = "Runs Lua Code"}, function(args, text)
