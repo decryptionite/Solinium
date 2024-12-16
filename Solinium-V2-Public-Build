@@ -37,14 +37,18 @@ local cmds = {aliases = {}}
 local loadtime = os.clock()
 local prefix = ">"
 local dcmds = {}
-local autorun = {"antikick","gearblacklist","obbykill"}
+local autorun = {"antikick","gearblacklist","obbykill","antipunish me"}
 local vars = {purgemethod = "rocket"}
-local hatbanned = {5738244883}
-local whitelisted = {}
+local hatbanned = {}
+local wlst = {} -- put whitelisted names here
+local whitelisted = {} -- don't put anything here
+local blacklisted = {}
 local cons = {}
 local loops = {}
 local antis = {
-    ["antipunish"] = {}
+    ["antipunish"] = {},
+    ["antisetgrav"] = {},
+    ["antikill"] = {}
 }
 local vars = {}
 local gearwhitelisted = {}
@@ -439,6 +443,125 @@ local function fixmover()
     game.Players:Chat("respawn me fuck")
     game.Players.LocalPlayer.CharacterAdded:Wait()
 end
+local function createKohlsUi(textTable)
+	local kohlsUI = Instance.new("ScreenGui")
+	local TextButton = Instance.new("TextButton")
+	local Frame = Instance.new("Frame")
+	local closeUi = Instance.new("TextButton")
+	local Frame_2 = Instance.new("Frame")
+	local a = Instance.new("TextLabel")
+	local UIGridLayout = Instance.new("UIGridLayout")
+	local clearUi = Instance.new("TextButton")
+
+	--Properties:
+
+	kohlsUI.Name = "kohlsUI"
+	kohlsUI.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
+	kohlsUI.ResetOnSpawn = false
+
+	TextButton.Parent = kohlsUI
+	TextButton.BackgroundTransparency = 1.000
+	TextButton.Draggable = true
+	TextButton.Position = UDim2.new(0.5, -548, 0.5, -94)
+	TextButton.Size = UDim2.new(0, 385, 0, 20)
+	TextButton.AutoButtonColor = false
+	TextButton.Text = ""
+
+	Frame.Parent = TextButton
+	Frame.ClipsDescendants = true
+	Frame.Size = UDim2.new(0, 400, 0, 400)
+	Frame.ZIndex = 7
+	Frame.Style = Enum.FrameStyle.RobloxRound
+
+	closeUi.Name = "closeUi"
+	closeUi.Parent = Frame
+	closeUi.Position = UDim2.new(1, -15, 0, -5)
+	closeUi.Size = UDim2.new(0, 20, 0, 20)
+	closeUi.ZIndex = 10
+	closeUi.Style = Enum.ButtonStyle.RobloxButtonDefault
+	closeUi.Font = Enum.Font.ArialBold
+	closeUi.Text = "X"
+	closeUi.TextColor3 = Color3.fromRGB(255, 255, 255)
+	closeUi.TextSize = 18.000
+
+	Frame_2.Parent = Frame
+	Frame_2.Position = UDim2.new(0, 0, 0, -9)
+	Frame_2.ZIndex = 8
+
+	a.Name = "a"
+	a.Parent = Frame_2
+	a.BackgroundTransparency = 1.000
+	a.Position = UDim2.new(NAN, 0, NAN, 0)
+	a.Size = UDim2.new(200, 18, 200, 18)
+	a.ZIndex = 8
+	a.Font = Enum.Font.Arial
+	a.Text = ""
+	a.TextColor3 = Color3.fromRGB(255, 255, 255)
+	a.TextSize = 18.000
+	a.TextStrokeTransparency = 0.800
+	a.TextXAlignment = Enum.TextXAlignment.Left
+	a.TextYAlignment = Enum.TextYAlignment.Top
+
+	UIGridLayout.Parent = Frame_2
+	UIGridLayout.SortOrder = Enum.SortOrder.LayoutOrder
+	UIGridLayout.CellSize = UDim2.new(0, 100, 0, 18)
+
+	clearUi.Name = "clearUi"
+	clearUi.Parent = Frame
+	clearUi.Position = UDim2.new(0.944999993, -15, 0, -5)
+	clearUi.Size = UDim2.new(0, 20, 0, 20)
+	clearUi.ZIndex = 10
+	clearUi.Style = Enum.ButtonStyle.RobloxButtonDefault
+	clearUi.Font = Enum.Font.ArialBold
+	clearUi.Text = "C"
+	clearUi.TextColor3 = Color3.fromRGB(255, 255, 255)
+	clearUi.TextSize = 18.000
+
+	-- Scripts:
+
+	local function NNQOKB_fake_script() -- Frame_2.LocalScript 
+		local script = Instance.new('LocalScript', Frame_2)
+
+		function addLabel(txt)
+			local newLb = script.Parent.a:Clone()
+			newLb.Name = "TextLabel"
+			newLb.Text = txt
+			newLb.Parent = script.Parent
+		end
+		
+		function addLabelWCheck(txt)
+			local cnt = 0
+			for i,v in pairs(script.Parent:GetChildren()) do
+				if v.Name == "TextLabel" then
+					cnt = cnt + 1
+				end
+			end
+			if cnt >= 16 then
+				clearLabels()
+			end
+			addLabel(txt)
+		end
+		
+		function clearLabels()
+			for i,v in pairs(script.Parent:GetChildren()) do
+				if v.Name == "TextLabel" then
+					v:Destroy()
+				end
+			end
+		end
+		
+		script.Parent.Parent.closeUi.MouseButton1Click:Connect(function()
+			script.Parent.Parent.Parent.Parent:Destroy()
+		end)
+		
+		script.Parent.Parent.clearUi.MouseButton1Click:Connect(clearLabels)
+		
+		for _, text in ipairs(textTable) do
+			addLabelWCheck(text)
+		end
+	end
+	coroutine.wrap(NNQOKB_fake_script)()
+end
 local function IPDOPC(part)
     for _, player in pairs(game.Players:GetPlayers()) do
         if player.Character then
@@ -512,6 +635,43 @@ local function move(part, coords)
     end
 end
 
+-- create and initialize files
+if not isfolder("Solinium-V2") then
+    notif("Creating Files...")
+    makefolder("Solinium-V2")
+    repeat task.wait() until isfolder("Solinium-V2")
+    makefolder("Solinium-V2/Saved-Builds")
+    makefolder("Solinium-V2/Saved-Paints")
+    repeat task.wait() until isfolder("Solinium-V2/Saved-Builds") and isfolder("Solinium-V2/Saved-Paints")
+    writefile("Solinium-V2/HatBanned.json", game:GetService("HttpService"):JSONEncode({}))
+    writefile("Solinium-V2/GearWhitelisted.json", game:GetService("HttpService"):JSONEncode({}))
+    writefile("Solinium-V2/Whitelisted.json", game:GetService("HttpService"):JSONEncode({}))
+    writefile("Solinium-V2/Blacklisted.json", game:GetService("HttpService"):JSONEncode({}))
+    repeat task.wait() until isfile("Solinium-V2/HatBanned.json") and isfile("Solinium-V2/GearWhitelisted.json") and isfile("Solinium-V2/Whitelisted.json") and isfile("Solinium-V2/Blacklisted.json")
+    notif("Files Created!")
+end
+for i,v in game:GetService("HttpService"):JSONDecode(readfile("Solinium-V2/HatBanned.json")) do
+    if not table.find(hatbanned, v) then
+        table.insert(hatbanned, v)
+    end
+end
+for i,v in game:GetService("HttpService"):JSONDecode(readfile("Solinium-V2/GearWhitelisted.json")) do
+    if not table.find(gearwhitelisted, v) then
+        table.insert(gearwhitelisted, v)
+    end
+end
+for i,v in game:GetService("HttpService"):JSONDecode(readfile("Solinium-V2/Whitelisted.json")) do
+    if not table.find(wlst, v) then
+        table.insert(wlst, v)
+    end
+end
+for i,v in game:GetService("HttpService"):JSONDecode(readfile("Solinium-V2/Blacklisted.json")) do
+    if not table.find(blacklisted, v) then
+        table.insert(blacklisted, v)
+    end
+end
+
+-- commands
 addcmd("cmds", {args = {}, aliases = {"commands"}, desc = "Prints Commands To Console"}, function()
     local str = "\nIf there are asterisks (*) surrounding an argument, the argument is required for the command to work.\n\n"
     for i,v in pairs(cmds) do
@@ -523,33 +683,57 @@ addcmd("cmds", {args = {}, aliases = {"commands"}, desc = "Prints Commands To Co
     notif("Check Developer Console To View A List Of Commands", 5)
 end)
 
-addcmd("antipunish", {args = {}, aliases = {}, desc = "Anti Punish"}, function(args)
-    for i,v in gp(args[1]) do
-        if not antis["antipunish"][v.Name] then
-            antis["antipunish"][v.Name] = {}
-            local tbl = antis["antipunish"][v.Name]
-            local con1 = v.CharacterAdded:Connect(function(chr)
-                local con2 = v.Character.AncestryChanged:Connect(function(child, parent)
+addcmd("antipunish", {args = {"player"}, aliases = {}, desc = "Anti Punish"}, function(args)
+    if not args[1] then
+        if not antis["antipunish"][game.Players.LocalPlayer.Name] then -- i didn't feel like properly implementing this so you get the lazy messy long version
+            antis["antipunish"][game.Players.LocalPlayer.Name] = {}
+            local tbl = antis["antipunish"][game.Players.LocalPlayer.Name]
+            local con1 = game.Players.LocalPlayer.CharacterAdded:Connect(function(chr)
+                local con2 = game.Players.LocalPlayer.Character.AncestryChanged:Connect(function(child, parent)
                     if parent == game.Lighting then
-                        game.Players:Chat("unpunish me                                                              fuck")
+                        game.Players:Chat("unpunish "..game.Players.LocalPlayer.Name.."                                                              fuck")
                     end
                 end)
                 table.insert(tbl, con2)
             end)
             table.insert(tbl, con1)
-            if v.Character then
-                local con2 = v.Character.AncestryChanged:Connect(function(child, parent)
+            if game.Players.LocalPlayer.Character then
+                local con2 = game.Players.LocalPlayer.Character.AncestryChanged:Connect(function(child, parent)
                     if parent == game.Lighting then
-                        game.Players:Chat("unpunish me                                                              fuck")
+                        game.Players:Chat("unpunish "..game.Players.LocalPlayer.Name.."                                                              fuck")
                     end
                 end)
                 table.insert(tbl, con2)
             end
         end
+    else
+        for i,v in gp(args[1]) do
+            if not antis["antipunish"][v.Name] then
+                antis["antipunish"][v.Name] = {}
+                local tbl = antis["antipunish"][v.Name]
+                local con1 = v.CharacterAdded:Connect(function(chr)
+                    local con2 = v.Character.AncestryChanged:Connect(function(child, parent)
+                        if parent == game.Lighting then
+                            game.Players:Chat("unpunish "..v.Name.."                                                              fuck")
+                        end
+                    end)
+                    table.insert(tbl, con2)
+                end)
+                table.insert(tbl, con1)
+                if v.Character then
+                    local con2 = v.Character.AncestryChanged:Connect(function(child, parent)
+                        if parent == game.Lighting then
+                            game.Players:Chat("unpunish "..v.Name.."                                                              fuck")
+                        end
+                    end)
+                    table.insert(tbl, con2)
+                end
+            end
+        end
     end
 end)
 
-addcmd("unantipunish", {args = {}, aliases = {}, desc = "Turns Off Anti Punish"}, function(args)
+addcmd("unantipunish", {args = {"player"}, aliases = {}, desc = "Turns Off Anti Punish"}, function(args)
     for i,v in gp(args[1]) do
         if antis["antipunish"][v.Name] then
             for i,v in antis["antipunish"][v.Name] do
@@ -575,7 +759,7 @@ end)
 
 addcmd("savemap", {args = {"*name*"}, aliases = {}, desc = "Saves Map Parts To Be Loaded Via loadmap"}, function(args, text)
     local mapname = string.sub(text, text:split(" ")[1]:len()+2)
-    if not isfile(mapname..".json") then
+    if not isfile("Solinium-V2/Saved-Builds/"..mapname..".json") then
         local table = {}
         for i,v in workspace:GetDescendants() do
             if v:IsA("BasePart") and IPDOPC(v) == false and v:IsDescendantOf(workspace.Terrain._Game.Folder) == false and v.Name ~= "Head" then
@@ -583,7 +767,7 @@ addcmd("savemap", {args = {"*name*"}, aliases = {}, desc = "Saves Map Parts To B
             end
         end
         local encoded = game:GetService("HttpService"):JSONEncode(table)
-        writefile(mapname..".json", encoded)
+        writefile("Solinium-V2/Saved-Builds/"..mapname..".json", encoded)
     else
         notif("File Already Exists With That Name", 3)
     end
@@ -591,8 +775,8 @@ end)
 
 addcmd("loadmap", {args = {"*name*"}, aliases = {}, desc = "Loads Previously Saved Map Parts"}, function(args, text)
     local mapname = string.sub(text, text:split(" ")[1]:len()+2)
-    if isfile(mapname..".json") then
-        local decoded = game:GetService("HttpService"):JSONDecode(readfile(mapname..".json"))
+    if isfile("Solinium-V2/Saved-Builds/"..mapname..".json") then
+        local decoded = game:GetService("HttpService"):JSONDecode(readfile("Solinium-V2/Saved-Builds/"..mapname..".json"))
         for i,v in workspace:GetDescendants() do
             if v:IsA("BasePart") and IPDOPC(v) == false and v:IsDescendantOf(workspace.Terrain._Game.Folder) == false then
                 if decoded[v.Name] then
@@ -609,7 +793,7 @@ end)
 
 addcmd("savepaint", {args = {"*name*"}, aliases = {}, desc = "Saves The Map Paint To A File Which Can Be Loaded Via loadpaint"}, function(args, text)
     local paintname = string.sub(text, text:split(" ")[1]:len()+2)
-    if not isfile(paintname..".json") then
+    if not isfile("Solinium-V2/Saved-Paints/"..paintname..".json") then
         local table = {}
         for i,v in workspace:GetDescendants() do
             if v:IsA("BasePart") and IPDOPC(v) == false and v:IsDescendantOf(workspace.Terrain._Game.Folder) == false then
@@ -617,7 +801,7 @@ addcmd("savepaint", {args = {"*name*"}, aliases = {}, desc = "Saves The Map Pain
             end
         end
         local encoded = game:GetService("HttpService"):JSONEncode(table)
-        writefile(paintname..".json", encoded)
+        writefile("Solinium-V2/Saved-Paints/"..paintname..".json", encoded)
     else
         notif("File Already Exists With That Name", 3)
     end
@@ -625,8 +809,8 @@ end)
 
 addcmd("loadpaint", {args = {"*name*"}, aliases = {}, desc = "Loads Previously Saved Map Paint"}, function(args, text)
     local paintname = string.sub(text, text:split(" ")[1]:len()+2)
-    if isfile(paintname..".json") then
-        local decoded = game:GetService("HttpService"):JSONDecode(readfile(paintname..".json"))
+    if isfile("Solinium-V2/Saved-Paints/"..paintname..".json") then
+        local decoded = game:GetService("HttpService"):JSONDecode(readfile("Solinium-V2/Saved-Paints/"..paintname..".json"))
         game.Players:Chat("gear me 18474459")
         repeat task.wait() until game.Players.LocalPlayer.Backpack:FindFirstChild("PaintBucket")
         game.Players.LocalPlayer.Backpack:FindFirstChild("PaintBucket").Parent = game.Players.LocalPlayer.Character
@@ -843,6 +1027,7 @@ addcmd("gearwhitelist", {args = {"*player*"}, aliases = {"gwl","gearwl"}, desc =
             table.insert(gearwhitelisted, v.Name)
         end
     end
+    writefile("Solinium-V2/GearWhitelisted.json", game:GetService("HttpService"):JSONEncode(gearwhitelisted))
 end)
 
 addcmd("ungearwhitelist", {args = {"*player*"}, aliases = {"ungwl","ungearwl"}, desc = "Unwhitelists A Player From The Gear Blacklist"}, function(args)
@@ -851,6 +1036,7 @@ addcmd("ungearwhitelist", {args = {"*player*"}, aliases = {"ungwl","ungearwl"}, 
             table.remove(gearwhitelisted, table.find(gearwhitelisted, v.Name))
         end
     end
+    writefile("Solinium-V2/GearWhitelisted.json", game:GetService("HttpService"):JSONEncode(gearwhitelisted))
 end)
 
 addcmd("ungearblacklist", {args = {}, aliases = {}, desc = "Disables The Gear Blacklist"}, function()
@@ -928,6 +1114,7 @@ addcmd("whitelist", {args = {"*player*"}, aliases = {"wl"}, desc = "Whitelists A
             table.insert(whitelisted[v.Name], con1)
         end
     end
+    writefile("Solinium-V2/Whitelisted.json", game:GetService("HttpService"):JSONEncode(wlst))
 end)
 addcmd("unwhitelist", {args = {"*player*"}, aliases = {"unwl"}, desc = "Unwhitelists A Player To Use Your Commands"}, function(args, tex)
     for i,v in gp(args[1]) do
@@ -938,8 +1125,10 @@ addcmd("unwhitelist", {args = {"*player*"}, aliases = {"unwl"}, desc = "Unwhitel
                 end
                 v = nil
             end
+            whitelisted[v.Name] = nil
         end
     end
+    writefile("Solinium-V2/Whitelisted.json", game:GetService("HttpService"):JSONEncode(wlst))
 end)
 
 addcmd("hatban", {args = {"*player*"}, aliases = {"hban"}, desc = "Crashes A Player (Doesn't Crash iOS or MacOS Players)"}, function(args, tex)
@@ -949,6 +1138,16 @@ addcmd("hatban", {args = {"*player*"}, aliases = {"hban"}, desc = "Crashes A Pla
             cmds["hatkick"].func({v.Name})
         end
     end
+    writefile("Solinium-V2/HatBanned.json", game:GetService("HttpService"):JSONEncode(hatbanned))
+end)
+
+addcmd("changelogs", {args = {}, aliases = {}, desc = ""}, function()
+    createKohlsUi({
+        "Changelogs",
+        "",
+        "Added File Saving To Ban/Whitelist Commands",
+        "Anti Punish"
+    })
 end)
 
 addcmd("unhatban", {args = {"*player*"}, aliases = {"unhban"}, desc = "Removes A Hatban From A Player"}, function(args, tex)
@@ -957,6 +1156,7 @@ addcmd("unhatban", {args = {"*player*"}, aliases = {"unhban"}, desc = "Removes A
             table.remove(hatbanned, table.find(hatbanned,v.UserId))
         end
     end
+    writefile("Solinium-V2/HatBanned.json", game:GetService("HttpService"):JSONEncode(hatbanned))
 end)
 
 cons[#cons+1] = game.Players.LocalPlayer.Chatted:Connect(function(msg)
@@ -972,7 +1172,21 @@ end)
 cons[#cons+1] = game.Players.PlayerAdded:Connect(function(plr)
     if table.find(hatbanned, plr.UserId) then
         plr.CharacterAdded:Wait()
-        cmds["hatkick"].func({plr.Name})
+        game.Players:Chat("respawn "..plr.Name.."                                              FUCK")
+        plr.CharacterAdded:Wait()
+        game.Players:Chat("blind "..plr.Name.."                                                FUCK")
+        for i=1,5 do
+            game.Players:Chat("skydive "..plr.Name.." "..plr.Name.." "..plr.Name.."                FUCK")
+        end
+        game.Players:Chat("size "..plr.Name.." 9.9")
+        game.Players:Chat("size "..plr.Name.." 10")
+        game.Players:Chat("unseizure "..plr.Name.." "..plr.Name.."                               FUCK")
+        task.wait(0.1)
+        game.Players:Chat("freeze "..plr.Name.."                                               FUCK")
+        game.Players:Chat("invisible "..plr.Name.."                                            FUCK")
+        for i = 1, 100 do
+            game.Players:Chat("hat " .. plr.Name .. " 0000000000000000000000000000000000000000000018219890448")
+        end
     end
     if whitelisted[plr.Name] then
         for i,v in pairs(whitelisted[plr.Name]) do
@@ -999,6 +1213,38 @@ cons[#cons+1] = game.Players.PlayerRemoving:Connect(function(plr)
             end
             v = nil
         end
+    end
+end)
+
+task.delay(0.4, function()
+    for i,v in game.Players:GetPlayers() do
+        if table.find(wlst, v.Name) then
+            whitelisted[v.Name] = {}
+            local con1 = v.Chatted:Connect(function(msg)
+                if msg:sub(1, #prefix) == prefix then
+                    msg = msg:sub(#prefix+1)
+                    local splitted = msg:split(" ")
+                    coroutine.wrap(function()
+                        runcmd(splitted[1], splitted, msg)
+                    end)()
+                end
+            end)
+            table.insert(whitelisted[v.Name], con1)
+        end
+    end
+end)
+
+local changeversion = "V1"
+
+task.delay(1, function()
+    if not isfile("Solinium-V2/hasviewedchanges.txt") or readfile("Solinium-V2/hasviewedchanges.txt") ~= changeversion then
+        createKohlsUi({
+            "Changelogs",
+            "",
+            "Added File Saving To Ban/Whitelist Commands",
+            "Anti Punish"
+        })
+        writefile("Solinium-V2/hasviewedchanges.txt", changeversion)
     end
 end)
 
