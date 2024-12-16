@@ -1237,15 +1237,17 @@ end)
 local changeversion = "V1"
 
 task.delay(1, function()
-    if not isfile("Solinium-V2/hasviewedchanges.txt") or readfile("Solinium-V2/hasviewedchanges.txt") ~= changeversion then
-        createKohlsUi({
-            "Changelogs",
-            "",
-            "Added File Saving To Ban/Whitelist Commands",
-            "Anti Punish"
-        })
-        writefile("Solinium-V2/hasviewedchanges.txt", changeversion)
-    end
+    pcall(function()
+        if not isfile("Solinium-V2/hasviewedchanges.txt") or readfile("Solinium-V2/hasviewedchanges.txt") ~= changeversion then
+            createKohlsUi({
+                "Changelogs",
+                "",
+                "Added File Saving To Ban/Whitelist Commands",
+                "Anti Punish"
+            })
+            writefile("Solinium-V2/hasviewedchanges.txt", changeversion)
+        end
+    end)
 end)
 
 task.delay(0.4, function()
