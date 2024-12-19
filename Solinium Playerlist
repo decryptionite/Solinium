@@ -1,0 +1,197 @@
+game.StarterGui:SetCoreGuiEnabled("PlayerList", false)
+local ScreenGui = Instance.new("ScreenGui")
+ScreenGui.ResetOnSpawn = false
+local Frame = Instance.new("Frame")
+local UICorner = Instance.new("UICorner")
+local UIListLayout = Instance.new("UIListLayout")
+
+ScreenGui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
+ScreenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+
+Frame.Parent = ScreenGui
+Frame.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+Frame.BackgroundTransparency = 1.000
+Frame.BorderColor3 = Color3.fromRGB(0, 0, 0)
+Frame.BorderSizePixel = 0
+Frame.Position = UDim2.new(0.85, 0, 0, 0)
+Frame.Size = UDim2.new(0, 185, 0, 441)
+
+UICorner.Parent = Frame
+
+UIListLayout.Parent = Frame
+UIListLayout.SortOrder = Enum.SortOrder.LayoutOrder
+UIListLayout.Padding = UDim.new(0, 5)
+
+local function getperm(plr)
+    local PermNBC = 66254
+    local PermBC = 64354
+    local UserID = plr.UserId
+
+    if
+        string.match(
+            game:HttpGet("https://inventory.roblox.com/v1/users/" .. UserID .. "/items/GamePass/" .. PermNBC),
+            PermNBC
+        ) or
+            string.match(
+                game:HttpGet("https://inventory.roblox.com/v1/users/" .. UserID .. "/items/GamePass/" .. PermBC),
+                PermBC
+            )
+     then
+        return true
+    else
+        return false
+    end
+end
+
+local function getpersons(plr)
+    local PersonNBC = 35748
+    local PersonBC = 37127
+    local UserID = plr.UserId
+
+    if
+        string.match(
+            game:HttpGet("https://inventory.roblox.com/v1/users/" .. UserID .. "/items/GamePass/" .. PersonNBC),
+            PersonNBC
+        ) or
+            string.match(
+                game:HttpGet("https://inventory.roblox.com/v1/users/" .. UserID .. "/items/GamePass/" .. PersonBC),
+                PersonBC
+            )
+     then
+        return true
+    else
+        return false
+    end
+end
+
+local function CreateNewTab(player)
+    local BPH = Instance.new("Frame")
+    local GoesIn = Instance.new("UICorner")
+    local GoesIn_2 = Instance.new("TextLabel")
+    local GoesIn_3 = Instance.new("TextLabel")
+    local GoesIn_4 = Instance.new("TextLabel")
+    local GoesIn_5 = Instance.new("TextLabel")
+    local GoesIn_6 = Instance.new("ImageLabel")
+
+    BPH.Name = player.Name
+    BPH.Parent = Frame
+    BPH.BackgroundColor3 = Color3.fromRGB(48, 48, 48)
+    BPH.BorderColor3 = Color3.fromRGB(0, 0, 0)
+    BPH.BorderSizePixel = 0
+    BPH.Size = UDim2.new(0, 185, 0, 54)
+
+    GoesIn.Name = "Goes In"
+    GoesIn.Parent = BPH
+
+    GoesIn_4.Name = "Goes In"
+    GoesIn_4.Parent = BPH
+    GoesIn_4.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+    GoesIn_4.BackgroundTransparency = 1.000
+    GoesIn_4.BorderColor3 = Color3.fromRGB(0, 0, 0)
+    GoesIn_4.BorderSizePixel = 0
+    GoesIn_4.Position = UDim2.new(0.349300563, 0, 0.216346174, 0)
+    GoesIn_4.Size = UDim2.new(0, 38, 0, 15)
+    GoesIn_4.Font = Enum.Font.SourceSans
+    GoesIn_4.Text = "@" .. player.DisplayName
+    GoesIn_4.TextColor3 = Color3.fromRGB(255, 255, 255)
+    GoesIn_4.TextSize = 14.000
+
+    GoesIn_5.Name = "Goes In"
+    GoesIn_5.Parent = BPH
+    GoesIn_5.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+    GoesIn_5.BackgroundTransparency = 1.000
+    GoesIn_5.BorderColor3 = Color3.fromRGB(0, 0, 0)
+    GoesIn_5.BorderSizePixel = 0
+    GoesIn_5.Position = UDim2.new(0.349300563, 0, 0.53116101, 0)
+    GoesIn_5.Size = UDim2.new(0, 38, 0, 15)
+    GoesIn_5.Font = Enum.Font.SourceSans
+    GoesIn_5.Text = "@" .. player.Name
+    GoesIn_5.TextColor3 = Color3.fromRGB(165, 165, 165)
+    GoesIn_5.TextSize = 12.000
+
+    GoesIn_6.Name = "Goes In"
+    GoesIn_6.Parent = BPH
+    GoesIn_6.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+    GoesIn_6.BackgroundTransparency = 1.000
+    GoesIn_6.BorderColor3 = Color3.fromRGB(0, 0, 0)
+    GoesIn_6.BorderSizePixel = 0
+    GoesIn_6.Position = UDim2.new(0.0432432443, 0, 0.160790622, 0)
+    GoesIn_6.Size = UDim2.new(0, 36, 0, 36)
+    GoesIn_6.Image = "rbxthumb://type=AvatarHeadShot&id=" .. player.UserId .. "&w=150&h=150"
+
+    GoesIn_2.Name = "Goes In"
+    GoesIn_2.Parent = BPH
+    GoesIn_2.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+    GoesIn_2.BackgroundTransparency = 1.000
+    GoesIn_2.BorderColor3 = Color3.fromRGB(0, 0, 0)
+    GoesIn_2.BorderSizePixel = 0
+    GoesIn_2.Position = UDim2.new(0.711462736, 0, 0.216346189, 0)
+    GoesIn_2.Size = UDim2.new(0, 38, 0, 15)
+    GoesIn_2.Font = Enum.Font.SourceSans
+    GoesIn_2.Text = "Perm"
+    task.spawn(
+        function()
+            if getperm(player) == true then
+                GoesIn_2.TextColor3 = Color3.fromRGB(0, 255, 0)
+            elseif getperm(player) == false then
+                GoesIn_2.TextColor3 = Color3.fromRGB(255, 0, 0)
+            end
+        end
+    )
+    GoesIn_2.TextSize = 12.000
+
+    GoesIn_3.Name = "Goes In"
+    GoesIn_3.Parent = BPH
+    GoesIn_3.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+    GoesIn_3.BackgroundTransparency = 1.000
+    GoesIn_3.BorderColor3 = Color3.fromRGB(0, 0, 0)
+    GoesIn_3.BorderSizePixel = 0
+    GoesIn_3.Position = UDim2.new(0.711462736, 0, 0.538461566, 0)
+    GoesIn_3.Size = UDim2.new(0, 38, 0, 15)
+    GoesIn_3.Font = Enum.Font.SourceSans
+    GoesIn_3.Text = "Persons299"
+    task.spawn(
+        function()
+            if getpersons(player) == true then
+                GoesIn_3.TextColor3 = Color3.fromRGB(0, 255, 0)
+            elseif getpersons(player) == false then
+                GoesIn_3.TextColor3 = Color3.fromRGB(255, 0, 0)
+            end
+        end
+    )
+    GoesIn_3.TextSize = 12.000
+end
+
+local function DestroyTab(str)
+    if Frame:FindFirstChild(str) then
+        Frame:FindFirstChild(str):Destroy()
+    end
+end
+
+game:GetService("UserInputService").InputBegan:Connect(
+    function(input)
+        if input.KeyCode == Enum.KeyCode.Tab then
+            if Frame.Position == UDim2.new(0.85, 0, 0, 0) then
+                Frame:TweenPosition(UDim2.new(1, 0, 0, 0), "Out", "Quad", 0.3)
+            else
+                Frame:TweenPosition(UDim2.new(0.85, 0, 0, 0), "Out", "Quad", 0.3)
+            end
+        end
+    end
+)
+
+for i, v in pairs(game.Players:GetPlayers()) do
+    CreateNewTab(v)
+end
+
+game.Players.PlayerAdded:Connect(
+    function(v)
+        CreateNewTab(v)
+    end
+)
+
+game.Players.PlayerRemoving:Connect(
+    function(v)
+        DestroyTab(v.Name)
+    end
+)
