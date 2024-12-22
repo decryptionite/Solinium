@@ -37,7 +37,7 @@ local cmds = {aliases = {}}
 local loadtime = os.clock()
 local prefix = ">"
 local dcmds = {}
-local autorun = {"antikick","gearblacklist","obbykill","antipunish me"}
+local autorun = {"antikick","gearblacklist","obbykill"}
 local vars = {purgemethod = "rocket"}
 local hatbanned = {}
 local wlst = {} -- put whitelisted names here
@@ -48,6 +48,8 @@ local loops = {}
 local antis = {
     ["antipunish"] = {},
     ["antisetgrav"] = {},
+    ["antispeed"] = {},
+    ["antijail"] = {},
     ["antikill"] = {}
 }
 local vars = {}
@@ -284,6 +286,12 @@ function Nofitication:Notify(nofdebug, middledebug, all)
 end
 
 return Nofitication]])() -- credits to whoever made this cus i don't remember
+local changelogversion = "V3"
+local changelogs = {
+    "Changelogs",
+    "",
+    "Added Tons Of Antis"
+}
 local function notif(message, duration, ...)
     local c = {...}
     if c[1] then
@@ -685,27 +693,7 @@ end)
 
 addcmd("antipunish", {args = {"player"}, aliases = {}, desc = "Anti Punish"}, function(args)
     if not args[1] then
-        if not antis["antipunish"][game.Players.LocalPlayer.Name] then -- i didn't feel like properly implementing this so you get the lazy messy long version
-            antis["antipunish"][game.Players.LocalPlayer.Name] = {}
-            local tbl = antis["antipunish"][game.Players.LocalPlayer.Name]
-            local con1 = game.Players.LocalPlayer.CharacterAdded:Connect(function(chr)
-                local con2 = game.Players.LocalPlayer.Character.AncestryChanged:Connect(function(child, parent)
-                    if parent == game.Lighting then
-                        game.Players:Chat("unpunish "..game.Players.LocalPlayer.Name.."                                                              fuck")
-                    end
-                end)
-                table.insert(tbl, con2)
-            end)
-            table.insert(tbl, con1)
-            if game.Players.LocalPlayer.Character then
-                local con2 = game.Players.LocalPlayer.Character.AncestryChanged:Connect(function(child, parent)
-                    if parent == game.Lighting then
-                        game.Players:Chat("unpunish "..game.Players.LocalPlayer.Name.."                                                              fuck")
-                    end
-                end)
-                table.insert(tbl, con2)
-            end
-        end
+        cmds["antipunish"].func({game.Players.LocalPlayer.Name})
     else
         for i,v in gp(args[1]) do
             if not antis["antipunish"][v.Name] then
@@ -734,15 +722,182 @@ addcmd("antipunish", {args = {"player"}, aliases = {}, desc = "Anti Punish"}, fu
 end)
 
 addcmd("unantipunish", {args = {"player"}, aliases = {}, desc = "Turns Off Anti Punish"}, function(args)
-    for i,v in gp(args[1]) do
-        if antis["antipunish"][v.Name] then
-            for i,v in antis["antipunish"][v.Name] do
-                if v.Connected then
-                    v:Disconnect()
+    if not args[1] then
+        cmds["unantipunish"].func({game.Players.LocalPlayer.Name})
+    else
+        for i,v in gp(args[1]) do
+            if antis["antipunish"][v.Name] then
+                for i,v in antis["antipunish"][v.Name] do
+                    if v.Connected then
+                        v:Disconnect()
+                    end
+                    v = nil
                 end
-                v = nil
+                antis["antipunish"][v.Name] = nil
             end
-            antis["antipunish"][v.Name] = nil
+        end
+    end
+end)
+
+addcmd("antikill", {args = {"player"}, aliases = {}, desc = "Anti Kill"}, function(args)
+    if not args[1] then
+        cmds["antikill"].func({game.Players.LocalPlayer.Name})
+    else
+        for i,v in gp(args[1]) do
+            if not antis["antikill"][v.Name] then
+                antis["antikill"][v.Name] = {}
+                local tbl = antis["antikill"][v.Name]
+                local con1 = v.CharacterAdded:Connect(function(chr)
+                    local con2 = v.Character:WaitForChild("Humanoid").Died:Connect(function()
+                        game.Players:Chat("reset "..v.Name.." fuck")
+                        if v == game.Players.LocalPlayer then
+                            v.CharacterAdded:Wait()
+                            for i,v in game.Players.LocalPlayer.Character:GetDescendants() do
+                                if v:IsA("BasePart") then
+                                    v.AssemblyAngularVelocity = Vector3.new(0, 0, 0)
+                                    v.AssemblyLinearVelocity = Vector3.new(0, 0, 0)
+                                end
+                            end
+                        end
+                    end)
+                    table.insert(tbl, con2)
+                end)
+                table.insert(tbl, con1)
+                if v.Character then
+                    local con2 = v.Character:WaitForChild("Humanoid").Died:Connect(function()
+                        game.Players:Chat("reset "..v.Name.." fuck")
+                        if v == game.Players.LocalPlayer then
+                            v.CharacterAdded:Wait()
+                            for i,v in game.Players.LocalPlayer.Character:GetDescendants() do
+                                if v:IsA("BasePart") then
+                                    v.AssemblyAngularVelocity = Vector3.new(0, 0, 0)
+                                    v.AssemblyLinearVelocity = Vector3.new(0, 0, 0)
+                                end
+                            end
+                        end
+                    end)
+                    table.insert(tbl, con2)
+                end
+            end
+        end
+    end
+end)
+
+addcmd("unantikill", {args = {"player"}, aliases = {}, desc = "Turns Off Anti Kill"}, function(args)
+    if not args[1] then
+        cmds["unantikill"].func({game.Players.LocalPlayer.Name})
+    else
+        for i,v in gp(args[1]) do
+            if antis["antikill"][v.Name] then
+                for i,v in antis["antikill"][v.Name] do
+                    if v.Connected then
+                        v:Disconnect()
+                    end
+                    v = nil
+                end
+                antis["antikill"][v.Name] = nil
+            end
+        end
+    end
+end)
+
+addcmd("antisetgrav", {args = {}, aliases = {}, desc = "Anti Setgrav (LOCAL)"}, function()
+    local tbl = antis["antisetgrav"]
+    local con1 = game.Players.LocalPlayer.CharacterAdded:Connect(function()
+        local con2 = game.Players.LocalPlayer.Character:WaitForChild("Torso").ChildAdded:Connect(function(child)
+            if child:IsA("BodyForce") then
+                child.Force = Vector3.new(0, 0, 0)
+                game:GetService("RunService").RenderStepped:Wait()
+                child:Destroy()
+            end
+        end)
+        table.insert(tbl, con2)
+    end)
+    table.insert(tbl, con1)
+    if game.Players.LocalPlayer.Character then
+        local con2 = game.Players.LocalPlayer.Character:WaitForChild("Torso").ChildAdded:Connect(function(child)
+            if child:IsA("BodyForce") then
+                child.Force = Vector3.new(0, 0, 0)
+                game:GetService("RunService").RenderStepped:Wait()
+                child:Destroy()
+            end
+        end)
+        table.insert(tbl, con2)
+    end
+end)
+
+addcmd("unantisetgrav", {args = {}, aliases = {}, desc = "Turns Off Anti Setgrav"}, function()
+    if #antis["antisetgrav"] > 0 then
+        for i,v in antis["antisetgrav"] do
+            if v.Connected then
+                v:Disconnect()
+            end
+            v = nil
+        end
+    end
+end)
+
+addcmd("antispeed", {args = {}, aliases = {}, desc = "Anti Speed (LOCAL)"}, function()
+    local tbl = antis["antispeed"]
+    local con1 = game.Players.LocalPlayer.CharacterAdded:Connect(function()
+        local con2 = game.Players.LocalPlayer.Character:WaitForChild("Humanoid"):GetPropertyChangedSignal("WalkSpeed"):Connect(function()
+            game.Players.LocalPlayer.Character.Humanoid.WalkSpeed = 16
+        end)
+        table.insert(tbl, con2)
+    end)
+    table.insert(tbl, con1)
+    if game.Players.LocalPlayer.Character then
+        local con2 = game.Players.LocalPlayer.Character:WaitForChild("Humanoid"):GetPropertyChangedSignal("WalkSpeed"):Connect(function()
+            game.Players.LocalPlayer.Character.Humanoid.WalkSpeed = 16
+        end)
+        table.insert(tbl, con2)
+    end
+end)
+
+addcmd("unantispeed", {args = {}, aliases = {}, desc = "Turns Off Anti Speed"}, function()
+    if #antis["antispeed"] > 0 then
+        for i,v in antis["antispeed"] do
+            if v.Connected then
+                v:Disconnect()
+            end
+            v = nil
+        end
+    end
+end)
+
+addcmd("antijail", {args = {"player"}, aliases = {}, desc = "Anti Jail"}, function(args)
+    if not args[1] then
+        cmds["antijail"].func({game.Players.LocalPlayer.Name})
+    else
+        for i,v in gp(args[1]) do
+            if not antis["antijail"][v.Name] then
+                antis["antijail"][v.Name] = {}
+                local tbl = antis["antijail"][v.Name]
+                local con1 = game.Workspace.Terrain._Game.Folder.ChildAdded:Connect(function(child)
+                    if child.Name == v.Name.."'s jail" then
+                        game.Players:Chat("unjail "..v.Name)
+                    end
+                end)
+                table.insert(tbl, con1)
+            end
+        end
+    end
+end)
+
+addcmd("unantijail", {args = {"player"}, aliases = {}, desc = "Turns Off Anti Jail"}, function(args)
+    if not args[1] then
+        cmds["unantijail"].func({game.Players.LocalPlayer.Name})
+    else
+        for i,v in gp(args[1]) do
+            if antis["antijail"][v.Name] then
+                for i,v in antis["antijail"][v.Name] do
+                    if v.Connected then
+                        v:Disconnect()
+                    end
+                    v = nil
+                end
+                antis["antijail"][v.Name] = nil
+            end
         end
     end
 end)
@@ -1156,13 +1311,7 @@ addcmd("hatban", {args = {"*player*"}, aliases = {"hban"}, desc = "Crashes A Pla
 end)
 
 addcmd("changelogs", {args = {}, aliases = {}, desc = ""}, function()
-    createKohlsUi({
-        "Changelogs",
-        "",
-        "Added Join & Leave Logs",
-        "Added Command Bar (PC ONLY FOR NOW)",
-        "Press ';' To Open"
-    })
+    createKohlsUi(changelogs)
 end)
 
 addcmd("unhatban", {args = {"*player*"}, aliases = {"unhban"}, desc = "Removes A Hatban From A Player"}, function(args, tex)
@@ -1324,8 +1473,8 @@ task.delay(0.5, function()
 		enabled = false
 		Frame_2.Position = UDim2.new(-0.0132391872, 0, -1, 0)
 	end)
-	game:GetService("UserInputService").InputEnded:Connect(function(key)
-		if key.KeyCode == Enum.KeyCode.Semicolon then
+	game:GetService("UserInputService").InputEnded:Connect(function(key, gameProcessedEvent)
+		if key.KeyCode == Enum.KeyCode.Semicolon and not gameProcessedEvent then
 			if not enabled then
 				TextBox:CaptureFocus()
 			end
@@ -1333,19 +1482,11 @@ task.delay(0.5, function()
 	end)
 end)
 
-local changeversion = "V2"
-
 task.delay(1, function()
     pcall(function()
-        if not isfile("Solinium-V2/hasviewedchanges.txt") or readfile("Solinium-V2/hasviewedchanges.txt") ~= changeversion then
-            createKohlsUi({
-                "Changelogs",
-                "",
-                "Added Join & Leave Logs",
-                "Added Command Bar (PC ONLY FOR NOW)",
-                "Press ';' To Open"
-            })
-            writefile("Solinium-V2/hasviewedchanges.txt", changeversion)
+        if not isfile("Solinium-V2/hasviewedchanges.txt") or readfile("Solinium-V2/hasviewedchanges.txt") ~= changelogversion then
+            createKohlsUi(changelogs)
+            writefile("Solinium-V2/hasviewedchanges.txt", changelogversion)
         end
     end)
 end)
