@@ -37,7 +37,7 @@ local cmds = {aliases = {}}
 local loadtime = os.clock()
 local prefix = ">"
 local dcmds = {}
-local autorun = {"antikick","gearblacklist","obbykill"}
+local autorun = {"antikick","gearblacklist","obbykill","antipunish","antikill","antispeed","antisetgrav"}
 local vars = {purgemethod = "rocket"}
 local hatbanned = {}
 local wlst = {} -- put whitelisted names here
@@ -783,6 +783,27 @@ addcmd("antikill", {args = {"player"}, aliases = {}, desc = "Anti Kill"}, functi
     end
 end)
 
+addcmd("colormap", {args = {"*color*"}, aliases = {"cmap"}, desc = "Paints The Map A Selected Color"}, function(args, text)
+    local bc = string.sub(text, text:split(" ")[1]:len()+2)
+    if not game.Players.LocalPlayer.Backpack:FindFirstChild("PaintBucket") and not game.Players.LocalPlayer.Character:FindFirstChild("PaintBucket") then
+        game.Players:Chat("gear me 18474459")
+        repeat task.wait() until game.Players.LocalPlayer.Backpack:FindFirstChild("PaintBucket")
+        game.Players.LocalPlayer.Backpack:FindFirstChild("PaintBucket").Parent = game.Players.LocalPlayer.Character
+        repeat task.wait() until game.Players.LocalPlayer.Character:FindFirstChild("PaintBucket")
+    else
+        local pb = game.Players.LocalPlayer.Backpack:FindFirstChild("PaintBucket") or game.Players.LocalPlayer.Character:FindFirstChild("PaintBucket")
+        if pb.Parent ~= game.Players.LocalPlayer.Character then
+            pb.Parent = game.Players.LocalPlayer.Character
+            repeat task.wait() until game.Players.LocalPlayer.Character:FindFirstChild("PaintBucket")
+        end
+    end
+    for i,v in workspace:GetDescendants() do
+        if v:IsA("BasePart") and IPDOPC(v) == false and v:IsDescendantOf(workspace.Terrain._Game.Folder) == false then
+            color(v, bc)
+        end
+    end
+end)
+
 addcmd("unantikill", {args = {"player"}, aliases = {}, desc = "Turns Off Anti Kill"}, function(args)
     if not args[1] then
         cmds["unantikill"].func({game.Players.LocalPlayer.Name})
@@ -966,10 +987,18 @@ addcmd("loadpaint", {args = {"*name*"}, aliases = {}, desc = "Loads Previously S
     local paintname = string.sub(text, text:split(" ")[1]:len()+2)
     if isfile("Solinium-V2/Saved-Paints/"..paintname..".json") then
         local decoded = game:GetService("HttpService"):JSONDecode(readfile("Solinium-V2/Saved-Paints/"..paintname..".json"))
-        game.Players:Chat("gear me 18474459")
-        repeat task.wait() until game.Players.LocalPlayer.Backpack:FindFirstChild("PaintBucket")
-        game.Players.LocalPlayer.Backpack:FindFirstChild("PaintBucket").Parent = game.Players.LocalPlayer.Character
-        repeat task.wait() until game.Players.LocalPlayer.Character:FindFirstChild("PaintBucket")
+        if not game.Players.LocalPlayer.Backpack:FindFirstChild("PaintBucket") and not game.Players.LocalPlayer.Character:FindFirstChild("PaintBucket") then
+            game.Players:Chat("gear me 18474459")
+            repeat task.wait() until game.Players.LocalPlayer.Backpack:FindFirstChild("PaintBucket")
+            game.Players.LocalPlayer.Backpack:FindFirstChild("PaintBucket").Parent = game.Players.LocalPlayer.Character
+            repeat task.wait() until game.Players.LocalPlayer.Character:FindFirstChild("PaintBucket")
+        else
+            local pb = game.Players.LocalPlayer.Backpack:FindFirstChild("PaintBucket") or game.Players.LocalPlayer.Character:FindFirstChild("PaintBucket")
+            if pb.Parent ~= game.Players.LocalPlayer.Character then
+                pb.Parent = game.Players.LocalPlayer.Character
+                repeat task.wait() until game.Players.LocalPlayer.Character:FindFirstChild("PaintBucket")
+            end
+        end
         for i,v in workspace:GetDescendants() do
             if v:IsA("BasePart") and IPDOPC(v) == false and v:IsDescendantOf(workspace.Terrain._Game.Folder) == false then
                 if decoded[v.Name] and v.BrickColor ~= BrickColor.new(decoded[v.Name]) then
@@ -1386,7 +1415,7 @@ cons[#cons+1] = game.Players.PlayerRemoving:Connect(function(plr)
     end
 end)
 
-task.delay(0.4, function()
+coroutine.wrap(function()
     for i,v in game.Players:GetPlayers() do
         if table.find(wlst, v.Name) then
             whitelisted[v.Name] = {}
@@ -1402,9 +1431,9 @@ task.delay(0.4, function()
             table.insert(whitelisted[v.Name], con1)
         end
     end
-end)
+end)()
 
-task.delay(0.5, function()
+coroutine.wrap(function()
     local ScreenGui = Instance.new("ScreenGui")
 	local Frame = Instance.new("Frame")
 	local Frame_2 = Instance.new("Frame")
@@ -1480,25 +1509,25 @@ task.delay(0.5, function()
 			end
 		end
 	end)
-end)
+end)()
 
-task.delay(1, function()
+coroutine.wrap(function()
     pcall(function()
         if not isfile("Solinium-V2/hasviewedchanges.txt") or readfile("Solinium-V2/hasviewedchanges.txt") ~= changelogversion then
             createKohlsUi(changelogs)
             writefile("Solinium-V2/hasviewedchanges.txt", changelogversion)
         end
     end)
-end)
+end)()
 
-task.delay(0.4, function()
+coroutine.wrap(function()
     for i,v in autorun do -- chatless autorun (fuck u tech)
         coroutine.wrap(function()
             runcmd(v:split(" ")[1], v:split(" "), v)
         end)()
     end
     notif("Start-Up Commands Loaded", 5)
-end)
+end)()
 
 notif("Solinium-V2 Has Been Loaded In: "..tostring(math.floor((os.clock() - loadtime) * 1000)).." ms, Welcome "..game.Players.LocalPlayer.Name, 5)
 notif("Script Owned & Developed By Knocks", 3)
