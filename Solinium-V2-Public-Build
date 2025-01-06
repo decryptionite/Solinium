@@ -358,6 +358,7 @@ local function gp(str)
 		return {}
 	end
 end
+
 local function getrgb(Color)
     local Color = BrickColor.new(Color)
     local r = Color.r
@@ -434,7 +435,29 @@ end
 local function isinradius(cframe1, cframe2, radius)
     return (cframe1.Position - cframe2.Position).Magnitude <= radius
 end
-
+local function req(url)
+    if request then
+        local d = request({Url = url, Method = "GET"}).Body
+        return d
+    else
+        return game:HttpGet(url)
+    end
+end
+local function getgp(plr)
+    local uid = plr.UserId
+    local t = {}
+    if #game:GetService("HttpService"):JSONDecode(req("https://inventory.roblox.com/v1/users/"..uid.."/items/GamePass/66254"))["data"] ~= 0 or #game:GetService("HttpService"):JSONDecode(req("https://inventory.roblox.com/v1/users/"..uid.."/items/GamePass/64354"))["data"] ~= 0 then
+        t.Perm = true
+    else
+        t.Perm = false
+    end
+    if #game:GetService("HttpService"):JSONDecode(req("https://inventory.roblox.com/v1/users/"..uid.."/items/GamePass/35748"))["data"] ~= 0 or #game:GetService("HttpService"):JSONDecode(req("https://inventory.roblox.com/v1/users/"..uid.."/items/GamePass/37127"))["data"] ~= 0 then
+        t.P299 = true
+    else
+        t.P299 = false
+    end
+    return t
+end
 local function fixmover()
     vars.ivorymoving = false
     for i,v in workspace:GetChildren() do
@@ -782,7 +805,6 @@ addcmd("antikill", {args = {"player"}, aliases = {}, desc = "Anti Kill"}, functi
         end
     end
 end)
-
 addcmd("colormap", {args = {"*color*"}, aliases = {"cmap"}, desc = "Paints The Map A Selected Color"}, function(args, text)
     local bc = string.sub(text, text:split(" ")[1]:len()+2)
     if not game.Players.LocalPlayer.Backpack:FindFirstChild("PaintBucket") and not game.Players.LocalPlayer.Character:FindFirstChild("PaintBucket") then
@@ -1363,42 +1385,73 @@ cons[#cons+1] = game.Players.LocalPlayer.Chatted:Connect(function(msg)
 end)
 
 cons[#cons+1] = game.Players.PlayerAdded:Connect(function(plr)
-    if table.find(hatbanned, plr.UserId) then
-        plr.CharacterAdded:Wait()
-        game.Players:Chat("respawn "..plr.Name.."                                              FUCK")
-        plr.CharacterAdded:Wait()
-        game.Players:Chat("blind "..plr.Name.."                                                FUCK")
-        for i=1,5 do
-            game.Players:Chat("skydive "..plr.Name.." "..plr.Name.." "..plr.Name.."                FUCK")
-        end
-        game.Players:Chat("size "..plr.Name.." 9.9")
-        game.Players:Chat("size "..plr.Name.." 10")
-        game.Players:Chat("unseizure "..plr.Name.." "..plr.Name.."                               FUCK")
-        task.wait(0.1)
-        game.Players:Chat("freeze "..plr.Name.."                                               FUCK")
-        game.Players:Chat("invisible "..plr.Name.."                                            FUCK")
-        for i = 1, 100 do
-            game.Players:Chat("hat " .. plr.Name .. " 0000000000000000000000000000000000000000000018219890448")
-        end
-    end
-    if whitelisted[plr.Name] then
-        for i,v in pairs(whitelisted[plr.Name]) do
-            v = nil
-        end
-        local con1 = plr.Chatted:Connect(function(msg)
-            if msg:sub(1, #prefix) == prefix then
-                msg = msg:sub(#prefix+1)
-                local splitted = msg:split(" ")
-                coroutine.wrap(function()
-                    runcmd(splitted[1], splitted, msg)
-                end)()
+    coroutine.wrap(function()
+        if table.find(hatbanned, plr.UserId) then
+            plr.CharacterAdded:Wait()
+            game.Players:Chat("respawn "..plr.Name.."                                              FUCK")
+            plr.CharacterAdded:Wait()
+            game.Players:Chat("blind "..plr.Name.."                                                FUCK")
+            for i=1,5 do
+                game.Players:Chat("skydive "..plr.Name.." "..plr.Name.." "..plr.Name.."                FUCK")
             end
-        end)
-        table.insert(whitelisted[plr.Name], con1)
-    end
-    if vars.joinlogs then
-        game.Players:Chat("h \n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n [Solinium-V2]: "..plr.DisplayName.." aka "..plr.Name.." Has Joined The Server! \n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n")
-    end
+            game.Players:Chat("size "..plr.Name.." 9.9")
+            game.Players:Chat("size "..plr.Name.." 10")
+            game.Players:Chat("unseizure "..plr.Name.." "..plr.Name.."                               FUCK")
+            task.wait(0.1)
+            game.Players:Chat("freeze "..plr.Name.."                                               FUCK")
+            game.Players:Chat("invisible "..plr.Name.."                                            FUCK")
+            for i = 1, 100 do
+                game.Players:Chat("hat " .. plr.Name .. " 0000000000000000000000000000000000000000000018219890448")
+            end
+        end
+    end)()
+    coroutine.wrap(function()
+        if whitelisted[plr.Name] then
+            for i,v in pairs(whitelisted[plr.Name]) do
+                v = nil
+            end
+            local con1 = plr.Chatted:Connect(function(msg)
+                if msg:sub(1, #prefix) == prefix then
+                    msg = msg:sub(#prefix+1)
+                    local splitted = msg:split(" ")
+                    coroutine.wrap(function()
+                        runcmd(splitted[1], splitted, msg)
+                    end)()
+                end
+            end)
+            table.insert(whitelisted[plr.Name], con1)
+        end
+    end)()
+    coroutine.wrap(function()
+        if vars.joinlogs then
+            game.Players:Chat("h \n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n [Solinium-V2]: "..plr.DisplayName.." aka "..plr.Name.." Has Joined The Server! \n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n")
+        end
+    end)()
+    coroutine.wrap(function()
+        local lstats = Instance.new("Folder", plr)
+        lstats.Name = "leaderstats"
+        local gpstats = getgp(plr)
+        local Perm = Instance.new("StringValue")
+        local Persons = Instance.new("StringValue")
+        Perm.Name = "Perm"
+        Persons.Name = "Persons299"
+        if not gpstats.Perm == nil then
+            Perm.Value = "?"
+        elseif gpstats.Perm == true then
+            Perm.Value = "Yes"
+        elseif gpstats.Perm == false then
+            Perm.Value = "No"
+        end
+        if gpstats.P299 == nil then
+            Persons.Value = "?"
+        elseif gpstats.P299 == true then
+            Persons.Value = "Yes"
+        elseif gpstats.P299 == false then
+            Persons.Value = "No"
+        end
+        Perm.Parent = lstats
+        Persons.Parent = lstats
+    end)()
 end)
 
 cons[#cons+1] = game.Players.PlayerRemoving:Connect(function(plr)
@@ -1414,6 +1467,36 @@ cons[#cons+1] = game.Players.PlayerRemoving:Connect(function(plr)
         game.Players:Chat("h \n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n [Solinium-V2]: "..plr.DisplayName.." aka "..plr.Name.." Has Left The Server! \n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n")
     end
 end)
+
+coroutine.wrap(function()
+    for i,plr in game.Players:GetPlayers() do
+        coroutine.wrap(function()
+            local lstats = Instance.new("Folder", plr)
+            lstats.Name = "leaderstats"
+            local gpstats = getgp(plr)
+            local Perm = Instance.new("StringValue")
+            local Persons = Instance.new("StringValue")
+            Perm.Name = "Perm"
+            Persons.Name = "Persons299"
+            if not gpstats.Perm == nil then
+                Perm.Value = "?"
+            elseif gpstats.Perm == true then
+                Perm.Value = "Yes"
+            elseif gpstats.Perm == false then
+                Perm.Value = "No"
+            end
+            if gpstats.P299 == nil then
+                Persons.Value = "?"
+            elseif gpstats.P299 == true then
+                Persons.Value = "Yes"
+            elseif gpstats.P299 == false then
+                Persons.Value = "No"
+            end
+            Perm.Parent = lstats
+            Persons.Parent = lstats
+        end)()
+    end
+end)()
 
 coroutine.wrap(function()
     for i,v in game.Players:GetPlayers() do
