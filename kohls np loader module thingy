@@ -1,4 +1,4 @@
-task.delay(5,
+task.delay(2,
     function()
         local cmds = {aliases = {}}
         local prefix = "$"
@@ -233,14 +233,13 @@ task.delay(5,
             "crash",
             {args = {"player"}, aliases = {}, desc = ""},
             function(u, args, fs)
-                local timepassed = tick()
                 for i, v in gp(args[1], u) do
                     coroutine.wrap(
                         function()
-                            while (tick() - timepassed > 10) and table.find(game.Players:GetPlayers(), v) do
+                            while table.find(game.Players:GetPlayers(), v) do
                                 if v.PlayerGui then
                                     local message = Instance.new("Message")
-                                    message.Text = string.rep("🤦‍♀️", 10000)
+                                    message.Text = string.rep("🤦‍♀️", 5000)
                                     message.Parent = v.PlayerGui
                                 end
                                 task.wait()
