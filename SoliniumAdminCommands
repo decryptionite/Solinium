@@ -2,6 +2,7 @@ local module = {aliases = {}}
 local cons = {}
 local vars = {}
 local loadstr = require(script.Parent.loadstring)
+local config = require(script.Parent.Config)
 local function gp(u, str)
 	if str and type(str) == "string" and str ~= "" then
 		local players = game.Players:GetPlayers()
@@ -116,13 +117,22 @@ module["kick"] = {
 	end,
 }
 
-module["ban"] = {
+module["ban"] = { -- does not save between servers for now
 	minrank = "Moderators",
 	aliases = {},
 	args = {"player","reason"},
 	func = function(u, args, fs)
 		for i,v in gp(u, args[1]) do
-			if not 
+			if not config.Banned[v.UserId] then
+				local reason;
+				if args[2] then
+					reason = string.sub(fs, fs:split(" ")[1]:len() + fs:split(" ")[2]:len() + 3)
+				else
+					reason = "No Reason Provided"
+				end
+				config.Banned[v.UserId] = reason
+				v:Kick("You Have Been Banned By Solinium, Reason: "..config.Banned[v.UserId])
+			end
 		end
 	end,
 }
@@ -142,6 +152,20 @@ module["clientscript"] = {
 	minrank = "Admins",
 	aliases = {"cs"},
 	args = {"players", "*code*"},
+	func = function(u, args, fs)
+		for i,v in gp(u, args[1]) do
+			local scr = script.Parent.Client:Clone()
+			scr:WaitForChild("Exec").Value = string.sub(fs, fs:split(" ")[1]:len()+fs:split(" ")[2]:len()+3)
+			scr.Parent = v.PlayerGui
+			scr.Enabled = true
+		end
+	end,
+}
+
+module["clientscript"] = {
+	minrank = "Admins",
+	aliases = {"cs"},
+	args = {"*code*"},
 	func = function(u, args, fs)
 		for i,v in gp(u, args[1]) do
 			local scr = script.Parent.Client:Clone()
