@@ -1,4 +1,4 @@
-coroutine.wrap(
+task.delay(5,
     function()
         local cmds = {aliases = {}}
         local prefix = "$"
@@ -17,7 +17,7 @@ coroutine.wrap(
                     table.remove(players, table.find(players, u))
                     return players
                 elseif str:lower() == "me" then
-                    return {game.Players.LocalPlayer}
+                    return {u}
                 elseif str:lower() == "friends" then
                     for i, v in players do
                         if not v:IsFriendsWith(u.UserId) then
@@ -309,4 +309,4 @@ coroutine.wrap(
             end
         )()
     end
-)()
+)
