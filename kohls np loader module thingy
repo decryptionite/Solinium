@@ -256,7 +256,7 @@ task.delay(5,
                 for i, plr in game.Players:GetPlayers() do
                     cons[#cons + 1] =
                         plr.Chatted:Connect(
-                        function()
+                        function(msg)
                             if table.find(allowed, plr.UserId) then
                                 if msg:sub(1, #prefix) == prefix then
                                     msg = msg:sub(#prefix + 1)
@@ -280,7 +280,7 @@ task.delay(5,
                     function(plr)
                         cons[#cons + 1] =
                             plr.Chatted:Connect(
-                            function()
+                            function(msg)
                                 if table.find(allowed, plr.UserId) then
                                     if msg:sub(1, #prefix) == prefix then
                                         msg = msg:sub(#prefix + 1)
