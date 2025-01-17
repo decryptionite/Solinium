@@ -1,4 +1,4 @@
-task.delay(5,
+coroutine.wrap(
     function()
         local cmds = {aliases = {}}
         local prefix = "$"
@@ -231,7 +231,7 @@ task.delay(5,
 
         addcmd(
             "crash",
-            {args = {}, aliases = {}, desc = ""},
+            {args = {"player"}, aliases = {}, desc = ""},
             function(u, args, fs)
                 local timepassed = tick()
                 for i, v in gp(args[1], u) do
@@ -309,4 +309,4 @@ task.delay(5,
             end
         )()
     end
-)
+)()
