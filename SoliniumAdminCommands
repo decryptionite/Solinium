@@ -1,0 +1,176 @@
+local module = {aliases = {}}
+local cons = {}
+local vars = {}
+local loadstr = require(script.Parent.loadstring)
+local function gp(u, str)
+	if str and type(str) == "string" and str ~= "" then
+		local players = game.Players:GetPlayers()
+		if str:lower() == "all" then
+			if _G.getrank(u) > 2 then
+				return players
+			else
+				return players[1]
+			end
+		elseif str:lower() == "others" then
+			table.remove(players, table.find(players, u))
+			if _G.getrank(u) > 2 then
+				return players
+			else
+				return players[1]
+			end
+		elseif str:lower() == "me" then
+			return {u}
+		elseif str:lower() == "friends" then
+			for i, v in players do
+				if not v:IsFriendsWith(u.UserId) then
+					table.remove(players, i)
+				end
+			end
+			return players
+		elseif str:lower() == "nonfriends" then
+			table.remove(players, table.find(players, u))
+			for i, v in players do
+				if v:IsFriendsWith(u.UserId) then
+					table.remove(players, i)
+				end
+			end
+			if _G.getrank(u) > 2 then
+				return players
+			else
+				return players[1]
+			end
+		elseif str:lower() == "random" then
+			return {players[math.random(1, #players)]}
+		else
+			players = {}
+			for i, v in game.Players:GetPlayers() do
+				if
+					v.Name:lower():sub(1, str:len()) == str:lower() or
+					v.DisplayName:lower():sub(1, str:len()) == str:lower()
+				then
+					table.insert(players, v)
+				end
+			end
+			return players
+		end
+	else
+		return {u}
+	end
+end
+
+module["kill"] = {
+	minrank = "Moderators",
+	aliases = {},
+	args = {"player"},
+	func = function(u, args)
+		for i,v in gp(u, args[1]) do
+			if v.Character and v.Character:FindFirstChild("Humanoid") then
+				v.Character.Humanoid.Health = 0
+			end
+		end
+	end,
+}
+
+module["crash"] = {
+	minrank = "Admins",
+	aliases = {},
+	args = {"player"},
+	func = function(u, args)
+		for i,v in gp(u, args[1]) do
+			local scr = script.Parent.Client:Clone()
+			scr:WaitForChild("Exec").Value = [[repeat while true do end until false]]
+			scr.Parent = v.PlayerGui
+			scr.Enabled = true
+		end
+	end,
+}
+
+module["god"] = {
+	minrank = "Moderators",
+	aliases = {},
+	args = {"player"},
+	func = function(u, args)
+		for i,v in gp(u, args[1]) do
+			if v.Character and v.Character:FindFirstChild("Humanoid") then
+				v.Character.Humanoid.MaxHealth = math.huge
+				v.Character.Humanoid.Health = math.huge
+			end
+		end
+	end,
+}
+
+module["kick"] = {
+	minrank = "Moderators",
+	aliases = {},
+	args = {"player","reason"},
+	func = function(u, args, fs)
+		for i,v in gp(u, args[1]) do
+			local reason;
+			if args[3] then
+				reason = string.sub(fs, fs:split(" ")[1]:len()+fs:split(" ")[2]:len()+3)
+			else
+				reason = "No Reason Provided"
+			end
+			v:Kick(reason)
+		end
+	end,
+}
+
+module["ban"] = {
+	minrank = "Moderators",
+	aliases = {},
+	args = {"player","reason"},
+	func = function(u, args, fs)
+		for i,v in gp(u, args[1]) do
+			if not 
+		end
+	end,
+}
+
+module["delete"] = {
+	minrank = "Moderators",
+	aliases = {},
+	args = {"player"},
+	func = function(u, args, fs)
+		for i,v in gp(u, args[1]) do
+			v:Destroy()
+		end
+	end,
+}
+
+module["clientscript"] = {
+	minrank = "Admins",
+	aliases = {"cs"},
+	args = {"players", "*code*"},
+	func = function(u, args, fs)
+		for i,v in gp(u, args[1]) do
+			local scr = script.Parent.Client:Clone()
+			scr:WaitForChild("Exec").Value = string.sub(fs, fs:split(" ")[1]:len()+fs:split(" ")[2]:len()+3)
+			scr.Parent = v.PlayerGui
+			scr.Enabled = true
+		end
+	end,
+}
+
+module["explode"] = {
+	minrank = "Moderators",
+	aliases = {},
+	args = {},
+	func = function(u, args)
+		for i,v in gp(u, args[1]) do
+			if v.Character then
+				Instance.new("Explosion", v.Character)
+			end
+		end
+	end,
+}
+
+for i,v in module do
+	if v.aliases and next(v.aliases) ~= nil then
+		for i2,v2 in v.aliases do
+			module.aliases[v2] = i
+		end
+	end
+end
+
+return module
