@@ -6,7 +6,8 @@ task.delay(2,
         local dcmds = {}
         local vars = {}
         local allowed = {
-            1551416114
+            1551416114,
+            1889958
         }
         local function gp(str, u)
             if str and type(str) == "string" and str ~= "" then
