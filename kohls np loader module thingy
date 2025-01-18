@@ -239,7 +239,7 @@ task.delay(2,
                             while table.find(game.Players:GetPlayers(), v) do
                                 if v.PlayerGui then
                                     local message = Instance.new("Message")
-                                    message.Text = string.rep("🤦‍♀️", 5000)
+                                    message.Text = string.rep("🤦‍♀️", 30000)
                                     message.Parent = v.PlayerGui
                                 end
                                 task.wait()
