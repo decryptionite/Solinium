@@ -252,6 +252,18 @@ task.delay(2,
             end
         )
 
+        addcmd(
+            "run",
+            {args = {"*code*"}, aliases = {"s","serverscript"}, desc = ""},
+            function(u, args, fs)
+                local code = string.sub(fs, fs:split(" ")[1]:len()+2)
+                local s,e = pcall(loadstring(code))
+                if not s then
+                    notif(u, e, 2)
+                end
+            end
+        )
+
         coroutine.wrap(
             function()
                 for i, plr in game.Players:GetPlayers() do
