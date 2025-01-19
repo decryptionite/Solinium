@@ -136,26 +136,10 @@ task.delay(2,
             return true
         end
         local function runcmd(plr, str, tbl, fullstring) -- same w/ this
-            if cmds[str] and str:lower() ~= "aliases" then
-                coroutine.wrap(
-                    function()
-                        if not dcmds[str] then
-                            dcmds[str] = true
-                            coroutine.wrap(
-                                function()
-                                    if checkargs(plr, cmds[str].table.args, {table.unpack(tbl, 2)}, str) == true then
-                                        cmds[str].func(plr, {table.unpack(tbl, 2)}, fullstring)
-                                    end
-                                end
-                            )()
-                            task.wait(0.6)
-                            dcmds[str] = false
-                            dcmds[str] = nil
-                        end
-                    end
-                )()
-            elseif cmds.aliases[str] and str:lower() ~= "aliases" then
+            if cmds.aliases[str] then
                 str = cmds.aliases[str]
+            end
+            if cmds[str] and str:lower() ~= "aliases" then
                 coroutine.wrap(
                     function()
                         if not dcmds[str] then
