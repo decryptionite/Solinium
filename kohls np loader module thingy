@@ -9,7 +9,8 @@ task.delay(
         local allowed = {
             1551416114,
             1889958,
-            1389780396
+            1389780396,
+            2172305
         }
         local function gp(str, u)
             if str and type(str) == "string" and str ~= "" then
