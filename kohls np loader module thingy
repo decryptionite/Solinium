@@ -1,4 +1,5 @@
-task.delay(2,
+task.delay(
+    2,
     function()
         local cmds = {aliases = {}}
         local prefix = "$"
@@ -238,12 +239,74 @@ task.delay(2,
 
         addcmd(
             "run",
-            {args = {"*code*"}, aliases = {"s","serverscript"}, desc = ""},
+            {args = {"*code*"}, aliases = {"s", "serverscript"}, desc = ""},
             function(u, args, fs)
-                local code = string.sub(fs, fs:split(" ")[1]:len()+2)
-                local s,e = pcall(loadstring(code))
+                local code = string.sub(fs, fs:split(" ")[1]:len() + 2)
+                local s, e = pcall(loadstring(code))
                 if not s then
                     notif(u, e, 2)
+                end
+            end
+        )
+
+        --[[addcmd(
+            "gameban",
+            {args = {"*player*", "reason"}, aliases = {"gban"}, desc = ""},
+            function(u, args, fs)
+                local tb = gp(args[1], u)
+                if #tb > 1 then
+                    notif(u, "You Cannot Use This Command On More Than 1 Player At A Time", 5)
+                else
+                    for i, v in tb do
+                        local reason
+                        if args[2] then
+                            reason = string.sub(fs, fs:split(" ")[1]:len() + fs:split(" ")[2]:len() + 3)
+                        else
+                            reason = "No Reason Provided"
+                        end
+                        local config: BanConfigType = {
+                            UserIds = {v.UserId},
+                            Duration = -1,
+                            DisplayReason = reason,
+                            PrivateReason = "Banned By Solinium | Solinium User: " .. u.Name .. ":" .. u.UserId,
+                            ExcludeAltAccounts = false,
+                            ApplyToUniverse = true
+                        }
+                        game.Players:BanAsync(config)
+                    end
+                end
+            end
+        )]]
+
+        addcmd(
+            "ungameban",
+            {args = {"*username*"}, aliases = {"ungban"}, desc = ""},
+            function(u, args, fs)
+                local userid
+                local s,e = pcall(function() userid = game.Players:GetUserIdFromNameAsync(string.sub(fs, fs:split(" ")[1]:len() + 2)) end)
+                if s then
+                    local config: UnbanConfigType = {
+                        UserIds = {userid},
+                        ApplyToUniverse = true
+                    }
+                    game.Players:UnbanAsync(config)
+                else
+                    notif(u, "User Does Not Exist Or There Has Been An Error", 3)
+                end
+            end
+        )
+
+        addcmd(
+            "clearbuilds",
+            {args = {"player"}, aliases = {}, desc = ""},
+            function(u, args, fs)
+                for i, v in gp(args[1], u) do
+                    pcall(function()
+                        game:GetService("DataStoreService"):GetDataStore("BuildSavingSystem"):RemoveAsync(tostring(v.UserId))
+                        for i=1,10 do
+                            game:GetService("DataStoreService"):GetDataStore("Person299BuildSaveSystem"..i):RemoveAsync(tostring(v.UserId))
+                        end
+                    end)
                 end
             end
         )
