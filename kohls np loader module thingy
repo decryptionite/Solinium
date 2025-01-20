@@ -301,12 +301,12 @@ task.delay(
             {args = {"player"}, aliases = {}, desc = ""},
             function(u, args, fs)
                 for i, v in gp(args[1], u) do
-                    pcall(function()
-                        game:GetService("DataStoreService"):GetDataStore("BuildSavingSystem"):RemoveAsync(tostring(v.UserId))
-                        for i=1,10 do
-                            game:GetService("DataStoreService"):GetDataStore("Person299BuildSaveSystem"..i):RemoveAsync(tostring(v.UserId))
-                        end
-                    end)
+                    game:GetService("DataStoreService"):GetDataStore("BuildSavingSystem"):RemoveAsync(tostring(v.UserId))
+                    task.wait(5) -- cooldown between removes i guess cus it errors
+                    for i=1,10 do
+                        game:GetService("DataStoreService"):GetDataStore("Person299BuildSaveSystem"..i):RemoveAsync(tostring(v.UserId))
+                        task.wait(5)
+                    end
                 end
             end
         )
