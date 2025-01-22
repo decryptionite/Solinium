@@ -1,4 +1,4 @@
-task.delay(
+--[[task.delay(
     2,
     function()
         local cmds = {aliases = {}}
@@ -374,3 +374,4 @@ task.delay(
         )()
     end
 )
+]]
