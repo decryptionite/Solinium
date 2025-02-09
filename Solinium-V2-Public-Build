@@ -13,7 +13,7 @@
 
     Firstly, I would like to give thanks to all those that have helped me get this far and allowed me to make this script.
 
-    Secondly, this script is an exponential step upwards from my previous projects (BlueSky, Plutonium, Solinium V1).
+    Secondly, this script is an exponential step upwards from my previous projects (Clyde sploit, Poop sploit, Kohles np).
 
     Thirdly, I wasn't planning on releasing this script open source, but due to complications with the obfuscation process, I am now unable to do that.
 
@@ -23,11 +23,11 @@
 
     
     
-    If you find any bugs, report them at discord.gg/bFNjeYDs8h or DM me on discord <@986754973364785194>
+    If you find any bugs, report them at or DM me on discord @decryptionite
     
     Please do not take anything from this script without my permission, and if you do, credit me. Thank You
     
-    Solinium-V2 is a project owned & developed by notoriousknocks on discord
+    Solinium-V2 is a project owned & developed by decryptionite on discord
 ]]
 
 
@@ -1613,4 +1613,4 @@ coroutine.wrap(function()
 end)()
 
 notif("Solinium-V2 Has Been Loaded In: "..tostring(math.floor((os.clock() - loadtime) * 1000)).." ms, Welcome "..game.Players.LocalPlayer.Name, 5)
-notif("Script Owned & Developed By Knocks", 3)
+notif("Script Owned & Developed By decryptionite", 3)
